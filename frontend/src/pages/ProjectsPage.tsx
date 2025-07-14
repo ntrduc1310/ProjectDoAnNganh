@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
-import { Project } from '../types';
+import type { Project } from '../types'; // Thêm 'type' keyword cho clarity
 import { Plus } from 'lucide-react';
 
 const ProjectsPage = () => {
