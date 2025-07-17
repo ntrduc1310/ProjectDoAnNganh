@@ -1,0 +1,57 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="28.0.4" pages="2">
+  <diagram name="Algorithms Detail" id="algorithms-detail">
+    <mxGraphModel dx="1281" dy="562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-algo" value="CHI TIẾT THUẬT TOÁN PHÂN TÍCH VÀ RA QUYẾT ĐỊNH" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+          <mxGeometry x="300" y="20" width="1000" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="skill-algo" value="📈 SKILL SCORE ALGORITHM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="80" width="450" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="skill-formula" value="SkillScore = (BaseScore × ComplexityMultiplier × TimelineBonus + CollaborationBonus) × DecayFactor&amp;#xa;&amp;#xa;📊 Input Variables:&amp;#xa;• BaseScore: 1.0 (cố định)&amp;#xa;• ComplexityMultiplier: 1-5 (dựa trên độ phức tạp task)&amp;#xa;• TimelineBonus: 1.0 (đúng hạn) / 0.5 (trễ hạn)&amp;#xa;• CollaborationBonus: 0.1-0.3 (feedback từ team)&amp;#xa;• DecayFactor: Giảm 5% mỗi tháng không sử dụng skill&amp;#xa;&amp;#xa;⚙️ Update Trigger: Mỗi khi task chuyển sang status &#39;DONE&#39;&amp;#xa;&amp;#xa;🎯 Output: Updated skill score trong bảng user_skills" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="50" y="140" width="450" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="workload-algo" value="⚖️ WORKLOAD SCORE ALGORITHM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="80" width="450" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="workload-formula" value="WorkloadScore = Σ(Priority × UrgencyMultiplier × EffortWeight) + MeetingLoad&amp;#xa;&amp;#xa;📊 Priority Weights:&amp;#xa;• HIGH: 4 points&amp;#xa;• MEDIUM: 2 points&amp;#xa;• LOW: 1 point&amp;#xa;&amp;#xa;⏰ Urgency Multipliers:&amp;#xa;• OVERDUE: 3x (tasks quá hạn)&amp;#xa;• DUE_TODAY: 2.5x (hết hạn hôm nay)&amp;#xa;• DUE_TOMORROW: 2x (hết hạn ngày mai)&amp;#xa;• DUE_WEEK: 1.5x (hết hạn tuần này)&amp;#xa;&amp;#xa;💪 EffortWeight: EstimatedHours × 0.1&amp;#xa;📅 MeetingLoad: ActiveMeetings × 0.5&amp;#xa;&amp;#xa;⚙️ Update Frequency: Mỗi giờ (Scheduled Job)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="550" y="140" width="450" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="assignment-algo" value="🤖 SMART ASSIGNMENT ALGORITHM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="350" width="950" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="assignment-formula" value="MatchScore = (SkillMatch × 0.4) + (AvailabilityScore × 0.3) + (TeamSynergy × 0.2) + (LearningOpportunity × 0.1) - (WorkloadPenalty × 0.3)&amp;#xa;&amp;#xa;🎯 Components:&amp;#xa;• SkillMatch: Tổng điểm skills phù hợp với yêu cầu task&amp;#xa;• AvailabilityScore: (100 - CurrentWorkloadScore) - thời gian rảnh&amp;#xa;• TeamSynergy: Điểm cộng tác với team members hiện tại (0-10)&amp;#xa;• LearningOpportunity: Bonus cho việc học skill mới (0-5)&amp;#xa;• WorkloadPenalty: Penalty nếu đã quá tải (CurrentWorkload &gt; 85)&amp;#xa;&amp;#xa;📋 Process:&amp;#xa;1. Lấy danh sách team members trong project&amp;#xa;2. Tính MatchScore cho từng member&amp;#xa;3. Sắp xếp theo điểm cao nhất&amp;#xa;4. Trả về top 3 recommendations với confidence score&amp;#xa;&amp;#xa;⚙️ Trigger: Khi PM tạo task mới và chọn required skills&amp;#xa;🎯 Output: List[{user, matchScore, confidenceLevel, reasonExplanation}]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="50" y="410" width="950" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="balance-algo" value="⚖️ AUTO-BALANCING ALGORITHM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="640" width="450" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="balance-steps" value="🔍 IMBALANCE DETECTION:&amp;#xa;1. Calculate team workload variance&amp;#xa;2. Identify overloaded members (&gt; 85%)&amp;#xa;3. Identify underloaded members (&lt; 50%)&amp;#xa;4. Flag for rebalancing if variance &gt; 30%&amp;#xa;&amp;#xa;🔄 REBALANCING STRATEGY:&amp;#xa;1. Find moveable tasks (not started + low priority)&amp;#xa;2. Match tasks with underloaded members&#39; skills&amp;#xa;3. Calculate impact of redistribution&amp;#xa;4. Generate rebalancing proposal&amp;#xa;&amp;#xa;⚙️ Auto-execution conditions:&amp;#xa;• Variance &gt; 40% AND overloaded &gt; 90%&amp;#xa;• Manager approval for changes &gt; 20% workload&amp;#xa;• Respect task dependencies và deadlines" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="50" y="700" width="450" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="risk-algo" value="⚠️ RISK ASSESSMENT ALGORITHM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="550" y="640" width="450" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="risk-factors" value="📊 RISK FACTORS ANALYSIS:&amp;#xa;&amp;#xa;🔴 HIGH RISK (Score 8-10):&amp;#xa;• Workload &gt; 90% + Deadline &lt; 3 days&amp;#xa;• Required skills mismatch &gt; 30%&amp;#xa;• Historical delay pattern detected&amp;#xa;&amp;#xa;🟡 MEDIUM RISK (Score 4-7):&amp;#xa;• Workload 70-90% + Standard timeline&amp;#xa;• New team member assigned&amp;#xa;• Dependencies on external factors&amp;#xa;&amp;#xa;🟢 LOW RISK (Score 0-3):&amp;#xa;• Workload &lt; 70% + Adequate timeline&amp;#xa;• Skills fully matched&amp;#xa;• Experienced team members&amp;#xa;&amp;#xa;🎯 MITIGATION SUGGESTIONS:&amp;#xa;• Task decomposition for large items&amp;#xa;• Skill training recommendations&amp;#xa;• Resource reallocation proposals&amp;#xa;• Timeline adjustment suggestions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#155724;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="550" y="700" width="450" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ml-integration" value="🧠 MACHINE LEARNING INTEGRATION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="930" width="950" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ml-details" value="📈 PREDICTIVE MODELS:&amp;#xa;&amp;#xa;1️⃣ TASK DURATION PREDICTION:&amp;#xa;   • Input: Task complexity, assignee skill level, historical data&amp;#xa;   • Model: Linear Regression with feature engineering&amp;#xa;   • Output: Estimated completion time ± confidence interval&amp;#xa;&amp;#xa;2️⃣ SUCCESS RATE PREDICTION:&amp;#xa;   • Input: Team composition, project size, timeline pressure&amp;#xa;   • Model: Random Forest Classifier&amp;#xa;   • Output: Probability of on-time, quality delivery&amp;#xa;&amp;#xa;3️⃣ WORKLOAD OPTIMIZATION:&amp;#xa;   • Input: Team skills matrix, project requirements, constraints&amp;#xa;   • Model: Genetic Algorithm for optimization&amp;#xa;   • Output: Optimal task distribution strategy&amp;#xa;&amp;#xa;4️⃣ CONTINUOUS LEARNING:&amp;#xa;   • Weekly model retraining with new completed tasks&amp;#xa;   • A/B testing for algorithm improvements&amp;#xa;   • Feedback loop from actual vs predicted outcomes&amp;#xa;&amp;#xa;🔧 IMPLEMENTATION:&amp;#xa;• Python scikit-learn integration via REST API&amp;#xa;• Model versioning and rollback capability&amp;#xa;• Real-time inference with &lt; 500ms response time" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="50" y="990" width="950" height="450" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="L0pz5yGTvr_-tBG4zXOT" name="Trang-2">
+    <mxGraphModel dx="1281" dy="562" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

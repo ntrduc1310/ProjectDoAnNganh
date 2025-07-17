@@ -1,14 +1,15 @@
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { SubmitHandler } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AtSign, Lock, Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
 import { loginSchema, type LoginFormInputs } from '../types';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     
     const { 
         register, 
@@ -24,23 +25,48 @@ const LoginPage = () => {
     });
 
     const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-        console.log("Dữ liệu form hợp lệ:", data);
-        
         try {
+            setIsLoading(true);
+            
             // Giả lập thời gian xử lý
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Sau khi đăng nhập thành công
-            localStorage.setItem('userToken', 'demo-token');
-            navigate('/');
+            // Dữ liệu người dùng giả lập
+            const mockUser = {
+                id: '1',
+                name: 'Nguyễn Trọng Đức',
+                email: data.email,
+                role: 'admin'
+            };
+            
+            const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6Ik5ndXnhu4VuIFRy4buNbmcgxJDhu6ljIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.mock-jwt-token';
+            
+            // Lưu trữ thông tin xác thực
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('user', JSON.stringify(mockUser));
+            
+            // Chuyển hướng đến trang dashboard
+            navigate('/dashboard', { replace: true });
+            
         } catch (error) {
-            console.error('Lỗi đăng nhập:', error);
+            console.error('Login failed:', error);
+            // Xử lý lỗi
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    // Kiểm tra nếu đã login thì redirect
+    React.useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            navigate('/dashboard', { replace: true });
+        }
+    }, [navigate]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 flex items-center justify-center p-4">
@@ -137,7 +163,7 @@ const LoginPage = () => {
                                     : 'bg-gray-600 cursor-not-allowed opacity-50'
                             }`}
                         >
-                            {isSubmitting ? (
+                            {isSubmitting || isLoading ? (
                                 <span className="flex items-center justify-center">
                                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

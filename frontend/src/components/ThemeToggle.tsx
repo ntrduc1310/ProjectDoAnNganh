@@ -1,24 +1,26 @@
-import { useTheme } from '../hooks/useTheme';
+import React from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '../hooks/useTheme';
 
-export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+export const ThemeToggle: React.FC = () => {
+  const { isDarkMode, toggleTheme } = useTheme(); // ✅ Sử dụng isDarkMode thay vì theme
 
   return (
     <button
       onClick={toggleTheme}
       className={`p-2 rounded-lg transition-colors ${
-        theme === 'dark' 
-          ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
-          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        isDarkMode 
+          ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
+          : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
       }`}
-      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      aria-label={`Chuyển sang chế độ ${isDarkMode ? 'sáng' : 'tối'}`}
+      title={`Chuyển sang chế độ ${isDarkMode ? 'sáng' : 'tối'}`}
     >
-      {theme === 'dark' ? (
-        <Sun size={20} />
+      {isDarkMode ? (
+        <Sun size={20} aria-hidden="true" />
       ) : (
-        <Moon size={20} />
+        <Moon size={20} aria-hidden="true" />
       )}
     </button>
   );
-}
+};

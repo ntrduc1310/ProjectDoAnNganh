@@ -1,0 +1,202 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="28.0.4">
+  <diagram name="Decision Support System Data Flow" id="decision-support-flow">
+    <mxGraphModel dx="1507" dy="661" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="HỆ THỐNG HỖ TRỢ RA QUYẾT ĐỊNH PHÂN CÔNG NHIỆM VỤ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+          <mxGeometry x="400" y="20" width="800" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="user-layer" value="USER INTERFACE LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="80" width="1400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" value="&amp;nbsp;Analytics Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="120" y="140" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="assignment-ui" value="&amp;nbsp;Assignment Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="300" y="140" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="workload-ui" value="&amp;nbsp;Workload Monitor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="480" y="140" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="reports-ui" value="&amp;nbsp;Reports &amp;amp; Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="660" y="140" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-gateway" value="🌐 API GATEWAY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="400" y="250" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="decision-layer" value="DECISION SUPPORT LAYER (CORE AI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="320" width="1400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="assignment-engine" value="&lt;b&gt;&amp;nbsp;Assignment Recommender&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Multi-criteria analysis&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Skill matching&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Workload consideration&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Team compatibility&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;" parent="1" vertex="1">
+          <mxGeometry x="120" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="workload-balancer" value="&lt;b&gt;Workload Balancer&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Imbalance detection&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Auto-redistribution&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Capacity analysis&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Burnout prevention&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;" parent="1" vertex="1">
+          <mxGeometry x="340" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="risk-analyzer" value="&lt;b&gt;&amp;nbsp;Risk Analyzer&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Deadline risk assessment&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Resource shortage alerts&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Performance prediction&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Mitigation planning&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;" parent="1" vertex="1">
+          <mxGeometry x="560" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ml-engine" value="&lt;b&gt;ML Engine&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Pattern recognition&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Predictive modeling&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Performance optimization&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Continuous learning&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;" parent="1" vertex="1">
+          <mxGeometry x="780" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="analytics-layer" value="ANALYTICS ENGINE LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="520" width="1400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="skill-calculator" value="&lt;b&gt;&amp;nbsp;Skill Score Calculator&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Historical performance&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Task complexity factor&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Timeline accuracy&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Peer feedback&lt;br&gt;• Decay over time&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;" parent="1" vertex="1">
+          <mxGeometry x="120" y="580" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="workload-calculator" value="&lt;b&gt;&amp;nbsp;Workload Calculator&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Active task count&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Priority weighting&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Effort estimation&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Deadline pressure&lt;br&gt;• Meeting load&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;" parent="1" vertex="1">
+          <mxGeometry x="320" y="580" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="performance-predictor" value="&lt;b&gt;Performance Predictor&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Completion time forecast&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Success probability&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Resource requirements&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Quality estimation&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Risk factors&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;" parent="1" vertex="1">
+          <mxGeometry x="520" y="580" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="trend-analyzer" value="&lt;b&gt;&amp;nbsp;Trend Analyzer&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Pattern identification&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Seasonal analysis&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Performance trends&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Capacity planning&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Anomaly detection&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;" parent="1" vertex="1">
+          <mxGeometry x="720" y="580" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="data-layer" value="DATA STORAGE LAYER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="720" width="1400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="postgresql" value="&lt;b&gt;PostgreSQL&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Users &amp;amp; Projects&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Tasks &amp;amp; Assignments&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Skills &amp;amp; Scores&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Historical Data&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#666666;align=left;" parent="1" vertex="1">
+          <mxGeometry x="120" y="780" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" value="&lt;b&gt;&amp;nbsp;Redis Cache&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Real-time metrics&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Session data&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Computed scores&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Temp calculations&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#666666;align=left;" parent="1" vertex="1">
+          <mxGeometry x="290" y="780" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="file-storage" value="&lt;b&gt;&amp;nbsp;File Storage&lt;/b&gt;&lt;div&gt;&amp;nbsp;• Documents&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Attachments&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Reports&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Exports&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#666666;align=left;" parent="1" vertex="1">
+          <mxGeometry x="460" y="780" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics" value="&lt;b&gt;&amp;nbsp;Metrics &amp;amp; Logs&amp;nbsp;&lt;/b&gt;&lt;div&gt;&amp;nbsp;• System performance&amp;nbsp;&lt;/div&gt;&lt;div&gt;• User activities&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Algorithm metrics&lt;/div&gt;&lt;div&gt;&amp;nbsp;• Error tracking&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f8f8;strokeColor=#666666;align=left;" parent="1" vertex="1">
+          <mxGeometry x="630" y="780" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="dashboard" target="api-gateway" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="220" as="sourcePoint" />
+            <mxPoint x="500" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="assignment-ui" target="api-gateway" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="380" y="220" as="sourcePoint" />
+            <mxPoint x="500" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="workload-ui" target="api-gateway" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="220" as="sourcePoint" />
+            <mxPoint x="500" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;" parent="1" source="api-gateway" target="assignment-engine" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="300" as="sourcePoint" />
+            <mxPoint x="220" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow5" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;" parent="1" source="api-gateway" target="workload-balancer" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="300" as="sourcePoint" />
+            <mxPoint x="440" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow6" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;" parent="1" source="api-gateway" target="risk-analyzer" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="300" as="sourcePoint" />
+            <mxPoint x="660" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow7" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="assignment-engine" target="skill-calculator" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="490" as="sourcePoint" />
+            <mxPoint x="210" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow8" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="workload-balancer" target="workload-calculator" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="490" as="sourcePoint" />
+            <mxPoint x="410" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow9" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="risk-analyzer" target="performance-predictor" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="660" y="490" as="sourcePoint" />
+            <mxPoint x="610" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow10" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#666666;" parent="1" source="skill-calculator" target="postgresql" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="210" y="690" as="sourcePoint" />
+            <mxPoint x="195" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow11" value="" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#666666;" parent="1" source="workload-calculator" target="redis" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="690" as="sourcePoint" />
+            <mxPoint x="365" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="external" value="EXTERNAL INTEGRATIONS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cdeb8b;strokeColor=#36393d;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="140" width="480" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="email" value="&amp;nbsp;Email Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#155724;" parent="1" vertex="1">
+          <mxGeometry x="1020" y="200" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="calendar" value="&amp;nbsp;Calendar API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#155724;" parent="1" vertex="1">
+          <mxGeometry x="1140" y="200" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="slack" value="&amp;nbsp;Slack/Teams" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#155724;" parent="1" vertex="1">
+          <mxGeometry x="1260" y="200" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="git" value="&amp;nbsp;Git Integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#155724;" parent="1" vertex="1">
+          <mxGeometry x="1380" y="200" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline" value="REAL-TIME PROCESSING PIPELINE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="100" y="920" width="1400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="event" value="📝 User Event&amp;#xa;(100ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="120" y="980" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="process" value="⚙️ Analytics&amp;#xa;Processing&amp;#xa;(200ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="280" y="980" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ml-process" value="🧠 ML Analysis&amp;#xa;(500ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="440" y="980" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" value="🎯 Decision&amp;#xa;Generation&amp;#xa;(300ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="600" y="980" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ui-update" value="💻 UI Update&amp;#xa;(100ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="760" y="980" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline-arrow1" value="⚡" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;strokeColor=#ff6b6b;" parent="1" source="event" target="process" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="1010" as="sourcePoint" />
+            <mxPoint x="270" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pipeline-arrow2" value="⚡" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;strokeColor=#ff6b6b;" parent="1" source="process" target="ml-process" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="1010" as="sourcePoint" />
+            <mxPoint x="430" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pipeline-arrow3" value="⚡" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;strokeColor=#ff6b6b;" parent="1" source="ml-process" target="decision" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="570" y="1010" as="sourcePoint" />
+            <mxPoint x="590" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pipeline-arrow4" value="⚡" style="endArrow=classic;html=1;rounded=0;strokeWidth=3;strokeColor=#ff6b6b;" parent="1" source="decision" target="ui-update" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="730" y="1010" as="sourcePoint" />
+            <mxPoint x="750" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="total-time" value="⏱️ TOTAL PROCESSING TIME: &lt; 1.2 SECONDS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#ff6b6b;" parent="1" vertex="1">
+          <mxGeometry x="900" y="1000" width="400" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

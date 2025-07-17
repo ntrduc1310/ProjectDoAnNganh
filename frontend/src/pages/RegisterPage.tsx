@@ -308,7 +308,7 @@ const RegisterPage = () => {
 
                 {/* Footer */}
                 <div className="mt-8 text-center text-gray-500 text-sm">
-                    <p>© 2024 Hệ thống Quản lý Dự án. Tất cả quyền được bảo lưu.</p>
+                    <p>© 2025  Hệ thống hỗ trợ ra quyết định phân công nhiệm vụ. Tất cả quyền được bảo lưu.</p>
                 </div>
             </div>
         </div>
