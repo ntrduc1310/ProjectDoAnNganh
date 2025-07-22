@@ -1,16 +1,64 @@
-version: '3.8'
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: postgres_doannganh2
-    restart: always
+    container_name: doannganh-postgres
     environment:
-      POSTGRES_USER: duc
-      POSTGRES_PASSWORD: password123
       POSTGRES_DB: doannganh_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "5433:5432" # Sử dụng cổng 5433 để tránh xung đột
+      - "5432:5432"
     volumes:
+      # Mount data directory for persistence
       - postgres_data:/var/lib/postgresql/data
+      # Mount SQL files for auto-initialization
+      - ./backend/backend/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/backend/src/main/resources/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doannganh_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - doannganh-network
+
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: doannganh-backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - doannganh-network
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: doannganh-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@doannganh.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - doannganh-network
+
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  doannganh-network:
+    driver: bridge

@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.7</version>
+    <version>3.3.7</version> <!-- CẬP NHẬT LÊN PHIÊN BẢN ỔN ĐỊNH MỚI NHẤT -->
     <relativePath/>
   </parent>
 
@@ -20,9 +20,10 @@
 
   <properties>
     <java.version>21</java.version>
+    <lombok.version>1.18.34</lombok.version> <!-- CẬP NHẬT LOMBOK MỚI NHẤT -->
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <jwt.version>0.12.6</jwt.version>
+    <jwt.version>0.12.6</jwt.version> <!-- Thêm JWT version -->
   </properties>
 
   <dependencies>
@@ -57,19 +58,6 @@
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
 
-    <!-- THÊM SWAGGER/OPENAPI DEPENDENCIES -->
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-      <version>2.3.0</version>
-    </dependency>
-
     <!-- Database -->
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -96,7 +84,15 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Test Dependencies -->
+    <!-- Lombok - PHIÊN BẢN MỚI NHẤT VÀ TƯƠNG THÍCH -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -109,6 +105,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- H2 Database for testing -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -118,16 +115,26 @@
 
   <build>
     <plugins>
+      <!-- Maven Compiler Plugin với cấu hình tối ưu -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>3.13.0</version> <!-- Cập nhật compiler plugin -->
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
           <release>${java.version}</release>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
           <compilerArgs>
             <arg>-parameters</arg>
+            <arg>-Xlint:unchecked</arg>
+            <arg>-Xlint:deprecation</arg>
           </compilerArgs>
         </configuration>
       </plugin>
@@ -135,12 +142,28 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+          <!-- Thêm profile development -->
+          <profiles>
+            <profile>dev</profile>
+          </profiles>
+        </configuration>
       </plugin>
 
+      <!-- Surefire Plugin cho testing -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
+        <configuration>
+          <skipTests>false</skipTests>
+        </configuration>
       </plugin>
     </plugins>
   </build>

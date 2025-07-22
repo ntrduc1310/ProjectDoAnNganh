@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/doannganh_db
+    username: postgres
+    password: password
+
+logging:
+  level:
+    com:
+      doananganh:
+        backend: DEBUG
