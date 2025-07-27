@@ -1,35 +1,48 @@
-package com.doananganh.backend.dto.request;
+package com.doananganh.backend.entity;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
-public class UpdateTaskRequest {
+@Entity
+@Table(name = "tasks")
+public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotNull(message = "Task ID không được để trống")
-    private Long taskId;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
-    @Size(max = 100, message = "Tiêu đề không quá 100 ký tự")
     private String title;
-
-    @Size(max = 500, message = "Mô tả không quá 500 ký tự")
     private String description;
-
     private String status; // TODO, IN_PROGRESS, COMPLETED
     private String priority; // HIGH, MEDIUM, LOW
 
-    private String assignedTo;
+    private String assignedTo; // full name
     private String assigneeEmail;
 
     private Integer estimatedHours;
     private Integer actualHours;
     private Double progress;
+
     private LocalDateTime dueDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Getter & Setter
-    public Long getTaskId() { return taskId; }
-    public void setTaskId(Long taskId) { this.taskId = taskId; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -60,4 +73,10 @@ public class UpdateTaskRequest {
 
     public LocalDateTime getDueDate() { return dueDate; }
     public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

@@ -54,30 +54,21 @@ CREATE TYPE proficiency_level AS ENUM ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', '
 -- ====================================
 -- USERS TABLE (Authentication & Profile)
 -- ====================================
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,      -- Add this
+    email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
-    role user_role NOT NULL DEFAULT 'USER',
-    department VARCHAR(100),
-    phone VARCHAR(20),
-    avatar_url TEXT,
-    is_active BOOLEAN DEFAULT TRUE,
-    email_verified BOOLEAN DEFAULT FALSE,
-    last_login TIMESTAMP,
+    full_name VARCHAR(100),
+    role user_role DEFAULT 'USER',
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
-    
-    -- Constraints
-    CONSTRAINT email_format CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
-    CONSTRAINT full_name_not_empty CHECK (LENGTH(TRIM(full_name)) > 0)
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- ====================================
 -- USER_SESSIONS TABLE (JWT Token Management)
 -- ====================================
-CREATE TABLE user_sessions (
+CREATE TABLE IF NOT EXISTS user_sessions (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     access_token_hash VARCHAR(255) NOT NULL,
@@ -95,7 +86,7 @@ CREATE TABLE user_sessions (
 -- ====================================
 -- TEAM_MEMBERS TABLE (Extended User Info)
 -- ====================================
-CREATE TABLE team_members (
+CREATE TABLE IF NOT EXISTS team_members (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE UNIQUE,
     skills TEXT[], -- Array of skills
@@ -117,7 +108,7 @@ CREATE TABLE team_members (
 -- ====================================
 -- PROJECTS TABLE
 -- ====================================
-CREATE TABLE projects (
+CREATE TABLE IF NOT EXISTS projects (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -147,7 +138,7 @@ CREATE TABLE projects (
 -- ====================================
 -- PROJECT_MEMBERS TABLE (Many-to-Many)
 -- ====================================
-CREATE TABLE project_members (
+CREATE TABLE IF NOT EXISTS project_members (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE,
     team_member_id BIGINT REFERENCES team_members(id) ON DELETE CASCADE,
@@ -165,7 +156,7 @@ CREATE TABLE project_members (
 -- ====================================
 -- TASKS TABLE
 -- ====================================
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -197,7 +188,7 @@ CREATE TABLE tasks (
 -- ====================================
 -- TASK_DEPENDENCIES TABLE
 -- ====================================
-CREATE TABLE task_dependencies (
+CREATE TABLE IF NOT EXISTS task_dependencies (
     id BIGSERIAL PRIMARY KEY,
     task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
     depends_on_task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
@@ -212,7 +203,7 @@ CREATE TABLE task_dependencies (
 -- ====================================
 -- TASK_ASSIGNMENTS TABLE
 -- ====================================
-CREATE TABLE task_assignments (
+CREATE TABLE IF NOT EXISTS task_assignments (
     id BIGSERIAL PRIMARY KEY,
     task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
     team_member_id BIGINT REFERENCES team_members(id) ON DELETE CASCADE,
@@ -233,7 +224,7 @@ CREATE TABLE task_assignments (
 -- ====================================
 -- TASK_COMMENTS TABLE
 -- ====================================
-CREATE TABLE task_comments (
+CREATE TABLE IF NOT EXISTS task_comments (
     id BIGSERIAL PRIMARY KEY,
     task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
@@ -249,7 +240,7 @@ CREATE TABLE task_comments (
 -- ====================================
 -- SKILL_MATRIX TABLE
 -- ====================================
-CREATE TABLE skill_matrix (
+CREATE TABLE IF NOT EXISTS skill_matrix (
     id BIGSERIAL PRIMARY KEY,
     team_member_id BIGINT REFERENCES team_members(id) ON DELETE CASCADE,
     skill_name VARCHAR(100) NOT NULL,
@@ -270,7 +261,7 @@ CREATE TABLE skill_matrix (
 -- ====================================
 -- WORKLOAD_PREDICTIONS TABLE (AI Generated)
 -- ====================================
-CREATE TABLE workload_predictions (
+CREATE TABLE IF NOT EXISTS workload_predictions (
     id BIGSERIAL PRIMARY KEY,
     team_member_id BIGINT REFERENCES team_members(id) ON DELETE CASCADE,
     predicted_workload DECIMAL(5,2) NOT NULL CHECK (predicted_workload >= 0),
@@ -288,7 +279,7 @@ CREATE TABLE workload_predictions (
 -- ====================================
 -- AI_SUGGESTIONS TABLE
 -- ====================================
-CREATE TABLE ai_suggestions (
+CREATE TABLE IF NOT EXISTS ai_suggestions (
     id BIGSERIAL PRIMARY KEY,
     type suggestion_type NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -315,7 +306,7 @@ CREATE TABLE ai_suggestions (
 -- ====================================
 -- NOTIFICATIONS TABLE
 -- ====================================
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     type notification_type NOT NULL,
@@ -338,7 +329,7 @@ CREATE TABLE notifications (
 -- ====================================
 -- PROJECT_METRICS TABLE (Analytics)
 -- ====================================
-CREATE TABLE project_metrics (
+CREATE TABLE IF NOT EXISTS project_metrics (
     id BIGSERIAL PRIMARY KEY,
     project_id BIGINT REFERENCES projects(id) ON DELETE CASCADE,
     metric_name VARCHAR(100) NOT NULL,
@@ -356,7 +347,7 @@ CREATE TABLE project_metrics (
 -- ====================================
 -- WORKLOAD_HISTORY TABLE (Time Series Data)
 -- ====================================
-CREATE TABLE workload_history (
+CREATE TABLE IF NOT EXISTS workload_history (
     id BIGSERIAL PRIMARY KEY,
     team_member_id BIGINT REFERENCES team_members(id) ON DELETE CASCADE,
     workload_value INTEGER NOT NULL CHECK (workload_value >= 0),
@@ -372,7 +363,7 @@ CREATE TABLE workload_history (
 -- ====================================
 -- SYSTEM_SETTINGS TABLE (Configuration)
 -- ====================================
-CREATE TABLE system_settings (
+CREATE TABLE IF NOT EXISTS system_settings (
     id BIGSERIAL PRIMARY KEY,
     setting_key VARCHAR(100) UNIQUE NOT NULL,
     setting_value TEXT NOT NULL,
@@ -389,7 +380,7 @@ CREATE TABLE system_settings (
 -- ====================================
 -- AUDIT_LOG TABLE (System Auditing)
 -- ====================================
-CREATE TABLE audit_log (
+CREATE TABLE IF NOT EXISTS audit_log (
     id BIGSERIAL PRIMARY KEY,
     table_name VARCHAR(100) NOT NULL,
     record_id BIGINT NOT NULL,
@@ -406,71 +397,56 @@ CREATE TABLE audit_log (
 );
 
 -- ====================================
--- INDEXES FOR PERFORMANCE
+-- INDEXES FOR PERFORMANCE  
 -- ====================================
 
--- Users indexes
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
-CREATE INDEX idx_users_active ON users(is_active);
-CREATE INDEX idx_users_department ON users(department);
-
--- Team members indexes
-CREATE INDEX idx_team_members_user_id ON team_members(user_id);
-CREATE INDEX idx_team_members_availability ON team_members(availability_status);
-CREATE INDEX idx_team_members_workload ON team_members(current_workload);
-CREATE INDEX idx_team_members_efficiency ON team_members(efficiency_score);
+-- Users indexes (Fixed)
+-- CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);  -- Remove this
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
 
 -- Projects indexes
-CREATE INDEX idx_projects_status ON projects(status);
-CREATE INDEX idx_projects_manager ON projects(manager_id);
-CREATE INDEX idx_projects_priority ON projects(priority);
-CREATE INDEX idx_projects_dates ON projects(start_date, end_date);
+CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);
+-- CREATE INDEX IF NOT EXISTS idx_projects_created_by ON projects(created_by);
+CREATE INDEX IF NOT EXISTS idx_projects_start_date ON projects(start_date);
+CREATE INDEX IF NOT EXISTS idx_projects_end_date ON projects(end_date);
 
 -- Tasks indexes
-CREATE INDEX idx_tasks_project_id ON tasks(project_id);
-CREATE INDEX idx_tasks_status ON tasks(status);
-CREATE INDEX idx_tasks_priority ON tasks(priority);
-CREATE INDEX idx_tasks_due_date ON tasks(due_date);
-CREATE INDEX idx_tasks_created_by ON tasks(created_by);
+CREATE INDEX IF NOT EXISTS idx_tasks_project_id ON tasks(project_id);
+-- CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);
+CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date);
 
--- Task assignments indexes
-CREATE INDEX idx_task_assignments_task_id ON task_assignments(task_id);
-CREATE INDEX idx_task_assignments_member_id ON task_assignments(team_member_id);
-CREATE INDEX idx_task_assignments_assigned_by ON task_assignments(assigned_by);
-CREATE INDEX idx_task_assignments_date ON task_assignments(assigned_date);
+-- Team members indexes
+CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_team_members_project_id ON team_members(project_id);
+-- CREATE INDEX IF NOT EXISTS idx_team_members_role ON team_members(role);
 
--- Notifications indexes
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_notifications_unread ON notifications(user_id, is_read);
-CREATE INDEX idx_notifications_type ON notifications(type);
-CREATE INDEX idx_notifications_created ON notifications(created_at);
+-- Workload history indexes
+CREATE INDEX IF NOT EXISTS idx_workload_history_team_member_id ON workload_history(team_member_id);
+CREATE INDEX IF NOT EXISTS idx_workload_history_recorded_date ON workload_history(recorded_date);
+CREATE INDEX IF NOT EXISTS idx_workload_history_workload_value ON workload_history(workload_value);
 
--- AI suggestions indexes
-CREATE INDEX idx_ai_suggestions_type ON ai_suggestions(type);
-CREATE INDEX idx_ai_suggestions_status ON ai_suggestions(status);
-CREATE INDEX idx_ai_suggestions_task ON ai_suggestions(task_id);
-CREATE INDEX idx_ai_suggestions_assignee ON ai_suggestions(suggested_assignee_id);
+-- AI recommendations indexes
+-- CREATE INDEX IF NOT EXISTS idx_ai_recommendations_team_member_id ON ai_recommendations(team_member_id);
+-- CREATE INDEX IF NOT EXISTS idx_ai_recommendations_recommendation_type ON ai_recommendations(recommendation_type);
+-- CREATE INDEX IF NOT EXISTS idx_ai_recommendations_created_at ON ai_recommendations(created_at);
 
--- Skill matrix indexes
-CREATE INDEX idx_skill_matrix_member ON skill_matrix(team_member_id);
-CREATE INDEX idx_skill_matrix_skill ON skill_matrix(skill_name);
-CREATE INDEX idx_skill_matrix_level ON skill_matrix(proficiency_level);
+-- User skills indexes
+-- CREATE INDEX IF NOT EXISTS idx_user_skills_user_id ON user_skills(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_user_skills_skill_name ON user_skills(skill_name);
+-- CREATE INDEX IF NOT EXISTS idx_user_skills_proficiency_level ON user_skills(proficiency_level);
 
--- Workload predictions indexes
-CREATE INDEX idx_workload_predictions_member ON workload_predictions(team_member_id);
-CREATE INDEX idx_workload_predictions_date ON workload_predictions(prediction_date);
+-- Project settings indexes
+-- CREATE INDEX IF NOT EXISTS idx_project_settings_project_id ON project_settings(project_id);
+-- CREATE INDEX IF NOT EXISTS idx_project_settings_setting_key ON project_settings(setting_key);
 
--- Project metrics indexes
-CREATE INDEX idx_project_metrics_project ON project_metrics(project_id);
-CREATE INDEX idx_project_metrics_name ON project_metrics(metric_name);
-CREATE INDEX idx_project_metrics_date ON project_metrics(measurement_date);
-
--- Audit log indexes
-CREATE INDEX idx_audit_log_table ON audit_log(table_name);
-CREATE INDEX idx_audit_log_record ON audit_log(table_name, record_id);
-CREATE INDEX idx_audit_log_user ON audit_log(changed_by);
-CREATE INDEX idx_audit_log_date ON audit_log(created_at);
+-- Suggestions indexes
+-- CREATE INDEX IF NOT EXISTS idx_suggestions_user_id ON suggestions(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_suggestions_type ON suggestions(suggestion_type);
+-- CREATE INDEX IF NOT EXISTS idx_suggestions_created_at ON suggestions(created_at);
 
 -- ====================================
 -- VIEWS FOR COMMON QUERIES

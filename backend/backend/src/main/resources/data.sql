@@ -71,6 +71,21 @@ INSERT INTO task_assignments (id, task_id, team_member_id, assigned_date, assign
 (7, 10, 1, '2024-09-01', 2, 'COMPLETED', 'Mobile development completed', NOW(), NOW());
 
 -- ====================================
+-- PROJECT_MEMBERS TABLE
+-- ====================================
+INSERT INTO project_members (project_id, team_member_id, role_in_project, joined_date, is_active, created_at) VALUES
+(1, 1, 'Developer', '2024-12-01', true, NOW()),
+(1, 2, 'Developer', '2024-12-01', true, NOW()),
+(1, 3, 'Designer', '2024-12-01', true, NOW());
+
+-- ====================================
+-- TASK_COMMENTS TABLE
+-- ====================================
+INSERT INTO task_comments (task_id, user_id, comment, is_internal, created_at) VALUES
+(1, 3, 'Bắt đầu phát triển giao diện.', true, NOW()),
+(2, 4, 'API đã hoàn thành 50%.', true, NOW());
+
+-- ====================================
 -- DASHBOARD_STATS (View/Calculated Data)
 -- This would typically be calculated, but for demo purposes:
 -- ====================================
