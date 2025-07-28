@@ -1,324 +1,401 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Bell, 
-  FolderOpen, 
-  Clock, 
-  AlertTriangle, 
-  CheckCircle, 
-  Zap, 
-  BarChart3, 
-  Users,
-  TrendingUp,
-  Eye,
-  Plus,
-  Calendar,
-  Activity,
-  Settings,
-  PieChart,
-  MessageSquare,
-  Download,
-  Filter,
-  Star,
-  Timer,
-  Target,
-  Award,
-  ChevronRight,
-  MoreHorizontal,
-  Briefcase,
-  GitBranch,
-  Code,
-  Database,
-  Smartphone,
-  Monitor,
-  Palette,
-  Shield,
-  X
+import {
+  Bell, FolderOpen, Clock, AlertTriangle, CheckCircle, Zap, BarChart3, Users,
+  TrendingUp, Eye, Plus, Calendar, Activity, Settings, PieChart, MessageSquare,
+  Download, Filter, Star, Timer, Target, Award, ChevronRight, MoreHorizontal,
+  Briefcase, GitBranch, Code, Database, Smartphone, Monitor, Palette, Shield, X,
+  ChevronDown
 } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
+import { Listbox } from '@headlessui/react';
+
+// Mock data
+const teamMembers = [
+  {
+    id: 1,
+    name: 'Nguyễn Văn A',
+    role: 'Frontend Developer',
+    department: 'Công nghệ',
+    email: 'a@example.com',
+    status: 'online',
+    rating: 4,
+    workload: 75,
+    level: 'Senior',
+    weeklyHours: 40,
+    currentTasks: 3,
+    completedTasks: 10,
+    overdueTasks: 1,
+    efficiency: 85,
+    skills: ['React', 'TypeScript', 'CSS'],
+    currentProjects: [
+      { name: 'Website Redesign', priority: 'high', progress: 70 },
+      { name: 'API Development', priority: 'medium', progress: 50 }
+    ],
+    initials: 'NA',
+    bgColor: 'bg-blue-500'
+  },
+  {
+    id: 2,
+    name: 'Trần Thị B',
+    role: 'UI/UX Designer',
+    department: 'Thiết kế',
+    email: 'b@example.com',
+    status: 'away',
+    rating: 5,
+    workload: 45,
+    level: 'Mid',
+    weeklyHours: 35,
+    currentTasks: 2,
+    completedTasks: 8,
+    overdueTasks: 0,
+    efficiency: 90,
+    skills: ['Figma', 'Photoshop', 'Illustrator'],
+    currentProjects: [
+      { name: 'Mobile App Redesign', priority: 'high', progress: 60 },
+      { name: 'Landing Page', priority: 'low', progress: 30 }
+    ],
+    initials: 'TB',
+    bgColor: 'bg-green-500'
+  },
+  {
+    id: 3,
+    name: 'Lê Văn C',
+    role: 'Backend Developer',
+    department: 'Công nghệ',
+    email: 'c@example.com',
+    status: 'busy',
+    rating: 3,
+    workload: 85,
+    level: 'Senior',
+    weeklyHours: 42,
+    currentTasks: 5,
+    completedTasks: 15,
+    overdueTasks: 2,
+    efficiency: 80,
+    skills: ['Node.js', 'Express', 'MongoDB'],
+    currentProjects: [
+      { name: 'Database Optimization', priority: 'medium', progress: 40 },
+      { name: 'Server Migration', priority: 'high', progress: 90 }
+    ],
+    initials: 'LC',
+    bgColor: 'bg-red-500'
+  },
+  {
+    id: 4,
+    name: 'Phạm Minh T',
+    role: 'DevOps Engineer',
+    department: 'Công nghệ',
+    email: 't@example.com',
+    status: 'online',
+    rating: 4,
+    workload: 60,
+    level: 'Mid',
+    weeklyHours: 38,
+    currentTasks: 4,
+    completedTasks: 12,
+    overdueTasks: 1,
+    efficiency: 75,
+    skills: ['Docker', 'Kubernetes', 'AWS'],
+    currentProjects: [
+      { name: 'CI/CD Pipeline', priority: 'high', progress: 80 },
+      { name: 'Infrastructure Monitoring', priority: 'medium', progress: 50 }
+    ],
+    initials: 'MT',
+    bgColor: 'bg-purple-500'
+  }
+];
+
+const aiSuggestions = [
+  {
+    id: 1,
+    title: 'Cân bằng tải công việc',
+    description: 'Giao thêm 2-3 task cho Trần Thị Hoa (tải thấp: 45%). Có thể tăng hiệu suất team lên 15%.',
+    priority: 'high',
+    savings: '8h',
+    status: 'new'
+  },
+  {
+    id: 2,
+    title: 'Tối ưu timeline',
+    description: 'Gia hạn 2 ngày cho Project Alpha để tránh burnout. Nguyễn Trọng Đức có thể cần nghỉ ngơi.',
+    priority: 'medium',
+    savings: null,
+    status: 'new'
+  },
+  {
+    id: 3,
+    title: 'Phân bổ kỹ năng',
+    description: 'Task UI/UX Design phù hợp với Trần Thị Hoa (95% efficiency). Mobile App cần designer.',
+    priority: 'low',
+    savings: null,
+    status: 'new'
+  },
+  {
+    id: 4,
+    title: 'Dự đoán deadline',
+    description: 'Dựa trên velocity hiện tại, Project Beta sẽ trễ 3 ngày. Cần thêm 1 developer.',
+    priority: 'high',
+    savings: null,
+    status: 'new'
+  }
+];
+
+// ✅ DATA CHO PROJECTS
+const projectsData = [
+  {
+    name: 'E-commerce Platform',
+    progress: 85,
+    status: 'on-track',
+    deadline: '15/08/2025',
+    team: 5
+  },
+  {
+    name: 'Mobile App Redesign',
+    progress: 60,
+    status: 'at-risk',
+    deadline: '22/08/2025',
+    team: 3
+  },
+  {
+    name: 'API Microservices',
+    progress: 40,
+    status: 'delayed',
+    deadline: '30/07/2025',
+    team: 4
+  },
+  {
+    name: 'Data Analytics Dashboard',
+    progress: 90,
+    status: 'on-track',
+    deadline: '10/08/2025',
+    team: 2
+  }
+];
+
+// ✅ DATA CHO TECH STACK
+const techStackData = [
+  {
+    tech: 'React/TypeScript',
+    usage: 85,
+    icon: Monitor,
+    projects: 6
+  },
+  {
+    tech: 'Node.js/Express',
+    usage: 70,
+    icon: Database,
+    projects: 4
+  },
+  {
+    tech: 'Python/Django',
+    usage: 60,
+    icon: GitBranch,
+    projects: 3
+  },
+  {
+    tech: 'Mobile (React Native)',
+    usage: 45,
+    icon: Smartphone,
+    projects: 2
+  },
+  {
+    tech: 'UI/UX Design',
+    usage: 90,
+    icon: Palette,
+    projects: 8
+  },
+  {
+    tech: 'DevOps/Security',
+    usage: 55,
+    icon: Shield,
+    projects: 5
+  }
+];
+
+// ✅ DATA CHO ACTIVITIES
+const activitiesData = [
+  {
+    user: 'Nguyễn Trọng Đức',
+    action: 'hoàn thành',
+    target: 'API Integration Module',
+    time: '2 giờ trước',
+    type: 'completion',
+    avatar: 'NTĐ'
+  },
+  {
+    user: 'AI System',
+    action: 'gợi ý',
+    target: 'phân bổ lại workload cho team Frontend',
+    time: '4 giờ trước',
+    type: 'ai-suggestion',
+    avatar: 'AI'
+  },
+  {
+    user: 'Lê Văn An',
+    action: 'bắt đầu',
+    target: 'Database Schema Design',
+    time: '6 giờ trước',
+    type: 'start',
+    avatar: 'LVA'
+  },
+  {
+    user: 'Trần Thị Hoa',
+    action: 'cập nhật',
+    target: 'Mobile App Mockups (85% → 90%)',
+    time: '8 giờ trước',
+    type: 'update',
+    avatar: 'TTH'
+  },
+  {
+    user: 'Phạm Minh Tú',
+    action: 'deploy',
+    target: 'Production Environment v2.1.0',
+    time: '1 ngày trước',
+    type: 'deployment',
+    avatar: 'PMT'
+  }
+];
+
+// ✅ DATA CHO QUICK ACTIONS
+const quickActionsData = [
+  {
+    icon: Plus,
+    label: 'Tạo Task',
+    color: 'bg-blue-500',
+    count: null
+  },
+  {
+    icon: Calendar,
+    label: 'Lịch trình',
+    color: 'bg-green-500',
+    count: '3 cuộc họp'
+  },
+  {
+    icon: PieChart,
+    label: 'Báo cáo',
+    color: 'bg-purple-500',
+    count: null
+  },
+  {
+    icon: MessageSquare,
+    label: 'Tin nhắn',
+    color: 'bg-yellow-500',
+    count: '5 tin mới'
+  },
+  {
+    icon: Users,
+    label: 'Team Chat',
+    color: 'bg-indigo-500',
+    count: '2 online'
+  },
+  {
+    icon: Target,
+    label: 'Mục tiêu',
+    color: 'bg-red-500',
+    count: '8/10'
+  },
+  {
+    icon: Settings,
+    label: 'Cài đặt',
+    color: 'bg-gray-500',
+    count: null
+  },
+  {
+    icon: Download,
+    label: 'Xuất dữ liệu',
+    color: 'bg-teal-500',
+    count: null
+  }
+];
+
+interface Project {
+  name: string;
+  priority: string;
+  progress: number;
+}
+
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  department: string;
+  email: string;
+  status: string;
+  rating: number;
+  workload: number;
+  level: string;
+  weeklyHours: number;
+  currentTasks: number;
+  completedTasks: number;
+  overdueTasks: number;
+  efficiency: number;
+  skills: string[];
+  currentProjects: Project[];
+  initials: string;
+  bgColor: string;
+  avgTaskTime?: string;
+}
+
+interface AiSuggestion {
+  id: number;
+  title: string;
+  description: string;
+  priority: string;
+  savings: string | null;
+  status: string;
+}
+
+interface ProjectData {
+  name: string;
+  progress: number;
+  status: string;
+  deadline: string;
+  team: number;
+}
+
+interface TechStack {
+  tech: string;
+  usage: number;
+  icon: React.ElementType;
+  projects: number;
+}
+
+interface ActivityData {
+  user: string;
+  action: string;
+  target: string;
+  time: string;
+  type: string;
+  avatar: string;
+}
+
+interface QuickAction {
+  icon: React.ElementType;
+  label: string;
+  color: string;
+  count: string | null;
+}
 
 export const DashboardPage: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [selectedTimeRange, setSelectedTimeRange] = useState('week');
+  const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+  const [isAiModalOpen, setAiModalOpen] = useState(false);
+  const [isReportModalOpen, setReportModalOpen] = useState(false);
+
+  // Handler functions
+  const handleCreateTask = () => setTaskModalOpen(true);
+  const handleAiSuggestion = () => setAiModalOpen(true);
+  const handleReport = () => setReportModalOpen(true);
+  const handleCloseModal = () => {
+    setTaskModalOpen(false);
+    setAiModalOpen(false);
+    setReportModalOpen(false);
+  };
 
   useEffect(() => {
-    console.log('Dashboard loaded');
+    // TODO: Fetch data and other side effects
   }, []);
-
-  // ✅ MOCK DATA CHO TEAM WORKLOAD CHI TIẾT
-  const teamMembers = [
-    {
-      id: 1,
-      name: 'Nguyễn Trọng Đức',
-      initials: 'NTĐ',
-      email: 'duc.nguyen@company.com',
-      avatar: null,
-      role: 'Senior Developer',
-      department: 'Frontend Team',
-      workload: 85,
-      status: 'online',
-      level: 'Cao',
-      color: 'yellow',
-      bgColor: 'bg-yellow-500',
-      currentTasks: 8,
-      completedTasks: 24,
-      overdueTasks: 1,
-      efficiency: 92,
-      skills: ['React', 'TypeScript', 'Node.js'],
-      currentProjects: [
-        { name: 'Dashboard UI', progress: 75, priority: 'high' },
-        { name: 'API Integration', progress: 60, priority: 'medium' },
-        { name: 'User Management', progress: 30, priority: 'low' }
-      ],
-      weeklyHours: 42,
-      avgTaskTime: '2.5h',
-      rating: 4.8
-    },
-    {
-      id: 2,
-      name: 'Lê Văn An',
-      initials: 'LVA',
-      email: 'an.le@company.com',
-      avatar: null,
-      role: 'Full-stack Developer',
-      department: 'Backend Team',
-      workload: 65,
-      status: 'busy',
-      level: 'Trung bình',
-      color: 'blue',
-      bgColor: 'bg-blue-500',
-      currentTasks: 5,
-      completedTasks: 18,
-      overdueTasks: 0,
-      efficiency: 87,
-      skills: ['Python', 'Django', 'PostgreSQL'],
-      currentProjects: [
-        { name: 'Database Design', progress: 90, priority: 'high' },
-        { name: 'API Development', progress: 45, priority: 'medium' }
-      ],
-      weeklyHours: 38,
-      avgTaskTime: '3.2h',
-      rating: 4.5
-    },
-    {
-      id: 3,
-      name: 'Trần Thị Hoa',
-      initials: 'TTH',
-      email: 'hoa.tran@company.com',
-      avatar: null,
-      role: 'UI/UX Designer',
-      department: 'Design Team',
-      workload: 45,
-      status: 'away',
-      level: 'Thấp',
-      color: 'green',
-      bgColor: 'bg-green-500',
-      currentTasks: 3,
-      completedTasks: 15,
-      overdueTasks: 0,
-      efficiency: 95,
-      skills: ['Figma', 'Adobe XD', 'Photoshop'],
-      currentProjects: [
-        { name: 'Mobile App Design', progress: 80, priority: 'medium' }
-      ],
-      weeklyHours: 32,
-      avgTaskTime: '4.1h',
-      rating: 4.9
-    },
-    {
-      id: 4,
-      name: 'Phạm Minh Tú',
-      initials: 'PMT',
-      email: 'tu.pham@company.com',
-      avatar: null,
-      role: 'DevOps Engineer',
-      department: 'Infrastructure',
-      workload: 70,
-      status: 'online',
-      level: 'Cao',
-      color: 'purple',
-      bgColor: 'bg-purple-500',
-      currentTasks: 6,
-      completedTasks: 22,
-      overdueTasks: 2,
-      efficiency: 89,
-      skills: ['Docker', 'Kubernetes', 'AWS'],
-      currentProjects: [
-        { name: 'CI/CD Pipeline', progress: 95, priority: 'high' },
-        { name: 'Security Audit', progress: 20, priority: 'high' }
-      ],
-      weeklyHours: 45,
-      avgTaskTime: '2.8h',
-      rating: 4.6
-    }
-  ];
-
-  // ✅ DATA CHO PROJECTS
-  const projectsData = [
-    {
-      name: 'E-commerce Platform',
-      progress: 85,
-      status: 'on-track',
-      deadline: '15/08/2025',
-      team: 5
-    },
-    {
-      name: 'Mobile App Redesign',
-      progress: 60,
-      status: 'at-risk',
-      deadline: '22/08/2025',
-      team: 3
-    },
-    {
-      name: 'API Microservices',
-      progress: 40,
-      status: 'delayed',
-      deadline: '30/07/2025',
-      team: 4
-    },
-    {
-      name: 'Data Analytics Dashboard',
-      progress: 90,
-      status: 'on-track',
-      deadline: '10/08/2025',
-      team: 2
-    }
-  ];
-
-  // ✅ DATA CHO TECH STACK
-  const techStackData = [
-    {
-      tech: 'React/TypeScript',
-      usage: 85,
-      icon: Monitor,
-      projects: 6
-    },
-    {
-      tech: 'Node.js/Express',
-      usage: 70,
-      icon: Database,
-      projects: 4
-    },
-    {
-      tech: 'Python/Django',
-      usage: 60,
-      icon: GitBranch,
-      projects: 3
-    },
-    {
-      tech: 'Mobile (React Native)',
-      usage: 45,
-      icon: Smartphone,
-      projects: 2
-    },
-    {
-      tech: 'UI/UX Design',
-      usage: 90,
-      icon: Palette,
-      projects: 8
-    },
-    {
-      tech: 'DevOps/Security',
-      usage: 55,
-      icon: Shield,
-      projects: 5
-    }
-  ];
-
-  // ✅ DATA CHO ACTIVITIES
-  const activitiesData = [
-    {
-      user: 'Nguyễn Trọng Đức',
-      action: 'hoàn thành',
-      target: 'API Integration Module',
-      time: '2 giờ trước',
-      type: 'completion',
-      avatar: 'NTĐ'
-    },
-    {
-      user: 'AI System',
-      action: 'gợi ý',
-      target: 'phân bổ lại workload cho team Frontend',
-      time: '4 giờ trước',
-      type: 'ai-suggestion',
-      avatar: 'AI'
-    },
-    {
-      user: 'Lê Văn An',
-      action: 'bắt đầu',
-      target: 'Database Schema Design',
-      time: '6 giờ trước',
-      type: 'start',
-      avatar: 'LVA'
-    },
-    {
-      user: 'Trần Thị Hoa',
-      action: 'cập nhật',
-      target: 'Mobile App Mockups (85% → 90%)',
-      time: '8 giờ trước',
-      type: 'update',
-      avatar: 'TTH'
-    },
-    {
-      user: 'Phạm Minh Tú',
-      action: 'deploy',
-      target: 'Production Environment v2.1.0',
-      time: '1 ngày trước',
-      type: 'deployment',
-      avatar: 'PMT'
-    }
-  ];
-
-  // ✅ DATA CHO QUICK ACTIONS
-  const quickActionsData = [
-    {
-      icon: Plus,
-      label: 'Tạo Task',
-      color: 'bg-blue-500',
-      count: null
-    },
-    {
-      icon: Calendar,
-      label: 'Lịch trình',
-      color: 'bg-green-500',
-      count: '3 cuộc họp'
-    },
-    {
-      icon: PieChart,
-      label: 'Báo cáo',
-      color: 'bg-purple-500',
-      count: null
-    },
-    {
-      icon: MessageSquare,
-      label: 'Tin nhắn',
-      color: 'bg-yellow-500',
-      count: '5 tin mới'
-    },
-    {
-      icon: Users,
-      label: 'Team Chat',
-      color: 'bg-indigo-500',
-      count: '2 online'
-    },
-    {
-      icon: Target,
-      label: 'Mục tiêu',
-      color: 'bg-red-500',
-      count: '8/10'
-    },
-    {
-      icon: Settings,
-      label: 'Cài đặt',
-      color: 'bg-gray-500',
-      count: null
-    },
-    {
-      icon: Download,
-      label: 'Xuất dữ liệu',
-      color: 'bg-teal-500',
-      count: null
-    }
-  ];
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -359,6 +436,13 @@ export const DashboardPage: React.FC = () => {
     if (progress <= 95) return 'w-[95%]';
     return 'w-full';
   };
+
+  const timeOptions = [
+    { value: 'day', label: 'Hôm nay' },
+    { value: 'week', label: 'Tuần này' },
+    { value: 'month', label: 'Tháng này' },
+    { value: 'quarter', label: 'Quý này' },
+  ];
 
   return (
     <div className={`p-6 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'} min-h-screen`}>
@@ -415,28 +499,36 @@ export const DashboardPage: React.FC = () => {
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
-          <select 
-            value={selectedTimeRange}
-            onChange={(e) => setSelectedTimeRange(e.target.value)}
-            title="Chọn khoảng thời gian"
-            aria-label="Bộ lọc khoảng thời gian"
-            className={`px-3 py-2 rounded-lg border font-medium ${
-              isDarkMode 
-                ? 'bg-gray-700 border-gray-600 text-white' 
-                : 'bg-white border-gray-300 text-gray-900'
-            }`}
-          >
-            <option value="day">Hôm nay</option>
-            <option value="week">Tuần này</option>
-            <option value="month">Tháng này</option>
-            <option value="quarter">Quý này</option>
-          </select>
+          <div className="relative">
+            <Listbox value={selectedTimeRange} onChange={setSelectedTimeRange}>
+              <Listbox.Button className={`flex items-center justify-between px-3 py-2 rounded-lg border font-medium min-w-[120px] ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}>
+                <span>
+                  {timeOptions.find(o => o.value === selectedTimeRange)?.label}
+                </span>
+                <ChevronDown size={18} className={`ml-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`} />
+              </Listbox.Button>
+              <Listbox.Options className="absolute left-0 mt-1 w-full rounded-lg shadow-lg bg-white dark:bg-gray-800 z-10">
+                {timeOptions.map(option => (
+                  <Listbox.Option
+                    key={option.value}
+                    value={option.value}
+                    className={({ active }: { active: boolean }) =>
+                      `cursor-pointer select-none px-4 py-2 rounded-lg ${active ? 'bg-blue-500 text-white' : isDarkMode ? 'text-white' : 'text-gray-900'}`
+                    }
+                  >
+                    {option.label}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Listbox>
+          </div>
 
           <button 
             type="button"
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
               isDarkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
             }`}
+            onClick={handleCreateTask}
           >
             <Plus size={18} className="mr-2" />
             Tạo Task
@@ -447,6 +539,7 @@ export const DashboardPage: React.FC = () => {
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
               isDarkMode ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-green-500 hover:bg-green-600 text-white'
             }`}
+            onClick={handleAiSuggestion}
           >
             <Zap size={18} className="mr-2" />
             AI Gợi Ý
@@ -457,6 +550,7 @@ export const DashboardPage: React.FC = () => {
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
               isDarkMode ? 'bg-purple-600 hover:bg-purple-700 text-white' : 'bg-purple-500 hover:bg-purple-600 text-white'
             }`}
+            onClick={handleReport}
           >
             <Download size={18} className="mr-2" />
             Xuất Báo Cáo
@@ -620,7 +714,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-6">
-            {teamMembers.map((member) => (
+            {teamMembers.map((member: TeamMember) => (
               <div key={member.id} className={`p-5 rounded-xl border transition-all hover:shadow-md ${
                 isDarkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'
               }`}>
@@ -838,109 +932,38 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            <div className={`p-4 rounded-lg border-l-4 border-blue-500 ${
-              isDarkMode ? 'bg-blue-900/20' : 'bg-blue-50'
-            }`}>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Cân bằng tải công việc
-                  </p>
-                  <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Giao thêm 2-3 task cho Trần Thị Hoa (tải thấp: 45%). Có thể tăng hiệu suất team lên 15%.
-                  </p>
-                  <div className="flex items-center mt-2 space-x-2">
-                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Độ ưu tiên: Cao</span>
-                    <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Tiết kiệm: 8h</span>
+            {aiSuggestions.map((suggestion: AiSuggestion, idx: number) => (
+              <div key={idx} className={`p-4 rounded-lg border-l-4 ${suggestion.priority === 'high' ? 'border-red-500' : suggestion.priority === 'medium' ? 'border-yellow-500' : 'border-green-500'} ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-blue-50 border-blue-100'} transition-all hover:shadow-lg`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Award size={18} className={suggestion.priority === 'high' ? 'text-red-500' : suggestion.priority === 'medium' ? 'text-yellow-500' : 'text-green-500'} />
+                      <span className={`font-semibold ${isDarkMode ? 'text-white' : ''}`}>
+                        {suggestion.title}
+                      </span>
+                    </div>
+                    <p className={`text-xs mt-1 ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>
+                      {suggestion.description}
+                    </p>
+                    <div className="flex items-center mt-2 gap-2">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${suggestion.priority === 'high' ? 'bg-red-100 text-red-700' : suggestion.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                        Ưu tiên: {suggestion.priority === 'high' ? 'Cao' : suggestion.priority === 'medium' ? 'TB' : 'Thấp'}
+                      </span>
+                      {suggestion.savings && (
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Tiết kiệm: {suggestion.savings}</span>
+                      )}
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    className="text-blue-500 hover:text-blue-600 ml-2"
+                    aria-label="Xem chi tiết gợi ý"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
                 </div>
-                <button 
-                  type="button"
-                  title="Xem chi tiết gợi ý"
-                  className="text-blue-500 hover:text-blue-600 ml-2"
-                >
-                  <ChevronRight size={16} />
-                </button>
               </div>
-            </div>
-
-            <div className={`p-4 rounded-lg border-l-4 border-green-500 ${
-              isDarkMode ? 'bg-green-900/20' : 'bg-green-50'
-            }`}>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Tối ưu timeline
-                  </p>
-                  <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Gia hạn 2 ngày cho Project Alpha để tránh burnout. Nguyễn Trọng Đức có thể cần nghỉ ngơi.
-                  </p>
-                  <div className="flex items-center mt-2 space-x-2">
-                    <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded">Độ ưu tiên: TB</span>
-                    <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Risk: Burnout</span>
-                  </div>
-                </div>
-                <button 
-                  type="button"
-                  title="Xem chi tiết gợi ý"
-                  className="text-green-500 hover:text-green-600 ml-2"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-
-            <div className={`p-4 rounded-lg border-l-4 border-yellow-500 ${
-              isDarkMode ? 'bg-yellow-900/20' : 'bg-yellow-50'
-            }`}>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Phân bổ kỹ năng
-                  </p>
-                  <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Task UI/UX Design phù hợp với Trần Thị Hoa (95% efficiency). Mobile App cần designer.
-                  </p>
-                  <div className="flex items-center mt-2 space-x-2">
-                    <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded">Skill Match: 95%</span>
-                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">Urgent</span>
-                  </div>
-                </div>
-                <button 
-                  type="button"
-                  title="Xem chi tiết gợi ý"
-                  className="text-yellow-500 hover:text-yellow-600 ml-2"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-
-            <div className={`p-4 rounded-lg border-l-4 border-purple-500 ${
-              isDarkMode ? 'bg-purple-900/20' : 'bg-purple-50'
-            }`}>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Dự đoán deadline
-                  </p>
-                  <p className={`text-xs mt-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Dựa trên velocity hiện tại, Project Beta sẽ trễ 3 ngày. Cần thêm 1 developer.
-                  </p>
-                  <div className="flex items-center mt-2 space-x-2">
-                    <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">Risk: Trễ deadline</span>
-                    <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">Cần resource</span>
-                  </div>
-                </div>
-                <button 
-                  type="button"
-                  title="Xem chi tiết gợi ý"
-                  className="text-purple-500 hover:text-purple-600 ml-2"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
@@ -972,7 +995,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {projectsData.map((project, index) => (
+            {projectsData.map((project: ProjectData, index: number) => (
               <div key={index} className={`p-4 rounded-lg ${
                 isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
               }`}>
@@ -1032,7 +1055,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-3">
-            {techStackData.map((item, index) => (
+            {techStackData.map((item: TechStack, index: number) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <item.icon size={18} className={isDarkMode ? 'text-gray-400' : 'text-gray-600'} />
@@ -1080,7 +1103,7 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {activitiesData.map((activity, index) => (
+            {activitiesData.map((activity: ActivityData, index: number) => (
               <div key={index} className="flex items-start space-x-3">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white ${
                   activity.type === 'completion' ? 'bg-green-500' :
@@ -1139,7 +1162,7 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-          {quickActionsData.map((action, index) => (
+          {quickActionsData.map((action: QuickAction, index: number) => (
             <button 
               key={index}
               type="button"
@@ -1164,6 +1187,218 @@ export const DashboardPage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Modal Tạo Task */}
+      {isTaskModalOpen && (
+        <Modal onClose={handleCloseModal} title={
+          <div className="flex items-center space-x-2">
+            <Plus size={22} className="text-blue-500" />
+            <span className={isDarkMode ? 'text-white' : ''}>Tạo Task mới</span>
+          </div>
+        }>
+          <form
+            className="space-y-5"
+            onSubmit={e => {
+              e.preventDefault();
+              alert('Task đã được tạo!');
+              handleCloseModal();
+            }}
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="task-title" className={`font-semibold text-sm ${isDarkMode ? 'text-white' : ''}`}>
+                Tiêu đề <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="task-title"
+                type="text"
+                className={`w-full px-3 py-2 rounded border focus:ring-2 focus:ring-blue-500 outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                required
+                placeholder="Nhập tiêu đề task"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="task-desc" className={`font-semibold text-sm ${isDarkMode ? 'text-white' : ''}`}>
+                Mô tả
+              </label>
+              <textarea
+                id="task-desc"
+                className={`w-full px-3 py-2 rounded border focus:ring-2 focus:ring-blue-500 outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                rows={3}
+                placeholder="Nhập mô tả task"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="task-priority" className={`font-semibold text-sm ${isDarkMode ? 'text-white' : ''}`}>
+                Độ ưu tiên
+              </label>
+              <select
+                id="task-priority"
+                className={`w-full px-3 py-2 rounded border focus:ring-2 focus:ring-blue-500 outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                aria-label="Chọn độ ưu tiên"
+                title="Chọn độ ưu tiên"
+              >
+                <option value="high">Cao 🔥</option>
+                <option value="medium">Trung bình ⚡</option>
+                <option value="low">Thấp 🌱</option>
+              </select>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-lg font-medium bg-gray-400 text-white hover:bg-gray-500 transition-colors"
+                onClick={handleCloseModal}
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                Tạo Task
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* Modal AI Gợi Ý */}
+      {isAiModalOpen && (
+        <Modal onClose={handleCloseModal} title={
+          <div className="flex items-center space-x-2">
+            <Zap size={22} className="text-purple-500" />
+            <span className={isDarkMode ? 'text-white' : ''}>AI Gợi Ý</span>
+          </div>
+        }>
+          <div className="space-y-5">
+            {aiSuggestions.map((suggestion: AiSuggestion) => (
+              <div key={suggestion.id} className={`p-4 rounded-xl border-l-4 ${suggestion.priority === 'high' ? 'border-red-500' : suggestion.priority === 'medium' ? 'border-yellow-500' : 'border-green-500'} ${isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-blue-50 border-blue-100'} transition-all hover:shadow-lg`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Award size={18} className={suggestion.priority === 'high' ? 'text-red-500' : suggestion.priority === 'medium' ? 'text-yellow-500' : 'text-green-500'} />
+                      <span className={`font-semibold ${isDarkMode ? 'text-white' : ''}`}>
+                        {suggestion.title}
+                      </span>
+                    </div>
+                    <p className={`text-xs mt-1 ${isDarkMode ? 'text-white' : 'text-gray-600'}`}>
+                      {suggestion.description}
+                    </p>
+                    <div className="flex items-center mt-2 gap-2">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${suggestion.priority === 'high' ? 'bg-red-100 text-red-700' : suggestion.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>
+                        Ưu tiên: {suggestion.priority === 'high' ? 'Cao' : suggestion.priority === 'medium' ? 'TB' : 'Thấp'}
+                      </span>
+                      {suggestion.savings && (
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">Tiết kiệm: {suggestion.savings}</span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-blue-500 hover:text-blue-600 ml-2"
+                    aria-label="Nhận gợi ý này"
+                    title="Nhận gợi ý này"
+                    onClick={() => alert('Đã nhận gợi ý AI!')}
+                  >
+                    <CheckCircle size={18} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600 flex justify-end">
+            <button
+              type="button"
+              className="px-4 py-2 rounded-lg font-medium bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+              aria-label="Xem tất cả gợi ý AI"
+              title="Xem tất cả gợi ý AI"
+              onClick={() => alert('Xem tất cả gợi ý AI')}
+            >
+              Xem tất cả gợi ý AI
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {/* Modal Xuất Báo Cáo */}
+      {isReportModalOpen && (
+        <Modal onClose={handleCloseModal} title={
+          <div className="flex items-center space-x-2">
+            <Download size={22} className="text-purple-500" />
+            <span className={isDarkMode ? 'text-white' : ''}>Xuất Báo Cáo</span>
+          </div>
+        }>
+          <form
+            className="space-y-5"
+            onSubmit={e => {
+              e.preventDefault();
+              alert('Báo cáo đã được xuất!');
+              handleCloseModal();
+            }}
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="report-type" className={`font-semibold text-sm ${isDarkMode ? 'text-white' : ''}`}>
+                Loại báo cáo
+              </label>
+              <select
+                id="report-type"
+                className={`w-full px-3 py-2 rounded border focus:ring-2 focus:ring-purple-500 outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                aria-label="Chọn loại báo cáo"
+                title="Chọn loại báo cáo"
+              >
+                <option value="task">Task</option>
+                <option value="project">Project</option>
+                <option value="workload">Workload</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="report-format" className={`font-semibold text-sm ${isDarkMode ? 'text-white' : ''}`}>
+                Định dạng
+              </label>
+              <select
+                id="report-format"
+                className={`w-full px-3 py-2 rounded border focus:ring-2 focus:ring-purple-500 outline-none transition-all ${isDarkMode ? 'bg-gray-900 border-gray-700 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                aria-label="Chọn định dạng báo cáo"
+                title="Chọn định dạng báo cáo"
+              >
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+              </select>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                className="px-4 py-2 rounded-lg font-medium bg-gray-400 text-white hover:bg-gray-500 transition-colors"
+                onClick={handleCloseModal}
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg font-medium bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+              >
+                Xuất báo cáo
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 };
+
+// Simple Modal component
+const Modal: React.FC<{ onClose: () => void; title?: React.ReactNode; children?: React.ReactNode }> = ({ onClose, title, children }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 min-w-[320px] max-w-[90vw] relative">
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        onClick={onClose}
+        aria-label="Đóng"
+      >
+        ×
+      </button>
+      {title && <h2 className="font-bold text-lg mb-2">{title}</h2>}
+      {children}
+    </div>
+  </div>
+);
