@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100),
     role user_role DEFAULT 'USER',
+    department VARCHAR(100),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -466,7 +467,7 @@ SELECT
 
 -- Team workload overview
 CREATE OR REPLACE VIEW team_workload_overview AS
-SELECT 
+SELECT
     tm.id,
     u.full_name,
     u.email,
@@ -475,14 +476,15 @@ SELECT
     ROUND((tm.current_workload * 100.0 / NULLIF(tm.workload_capacity, 0)), 2) AS workload_percentage,
     tm.efficiency_score,
     tm.availability_status,
-    COUNT(ta.id) AS active_tasks,
-    u.department
+    COUNT(ta.id) AS active_tasks
 FROM team_members tm
 JOIN users u ON tm.user_id = u.id
-LEFT JOIN task_assignments ta ON tm.id = ta.team_member_id 
+LEFT JOIN task_assignments ta ON tm.id = ta.team_member_id
     AND ta.status = 'ASSIGNED'
-    AND EXISTS (SELECT 1 FROM tasks t WHERE t.id = ta.task_id AND t.status IN ('TODO', 'IN_PROGRESS'))
-GROUP BY tm.id, u.full_name, u.email, tm.current_workload, tm.workload_capacity, tm.efficiency_score, tm.availability_status, u.department;
+    AND EXISTS (
+        SELECT 1 FROM tasks t WHERE t.id = ta.task_id AND t.status IN ('TODO', 'IN_PROGRESS')
+    )
+GROUP BY tm.id, u.full_name, u.email, tm.current_workload, tm.workload_capacity, tm.efficiency_score, tm.availability_status;
 
 -- Project progress overview
 CREATE OR REPLACE VIEW project_progress_overview AS
@@ -538,7 +540,7 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql;
 
 -- Apply trigger to relevant tables
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -610,6 +612,17 @@ COMMENT ON TABLE skill_matrix IS 'Skills and proficiency levels for team members
 COMMENT ON TABLE workload_predictions IS 'AI predictions for future workload';
 COMMENT ON TABLE project_metrics IS 'Analytics and metrics for projects';
 COMMENT ON TABLE audit_log IS 'Audit trail for system changes';
+
+-- ====================================
+-- INITIAL DATA SEEDING
+-- ====================================
+INSERT INTO users (id, username, email, password, full_name, role, department, created_at, updated_at) VALUES
+  (1, 'admin', 'admin@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin System', 'ADMIN', 'IT', NOW(), NOW()),
+  (2, 'manager', 'manager@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Project Manager', 'MANAGER', 'Management', NOW(), NOW()),
+  (3, 'duc.nguyen', 'duc.nguyen@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Nguyễn Trọng Đức', 'USER', 'Development', NOW(), NOW()),
+  (4, 'minh.tran', 'minh.tran@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Trần Văn Minh', 'USER', 'Development', NOW(), NOW()),
+  (5, 'linh.pham', 'linh.pham@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Phạm Thị Linh', 'USER', 'Design', NOW(), NOW()),
+  (6, 'khang.le', 'khang.le@doannganh.com', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Lê Minh Khang', 'USER', 'Testing', NOW(), NOW());
 
 -- ====================================
 -- SUCCESS MESSAGE
