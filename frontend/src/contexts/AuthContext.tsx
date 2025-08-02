@@ -1,116 +1,74 @@
-import { useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { AuthContext } from './auth-context';
-import type { User, RegisterData } from './auth-context';
 
-interface AuthProviderProps {
-  children: ReactNode;
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
+interface AuthContextType {
+  isAuthenticated: boolean;
+  token: string | null;
+  user: User | null;
+  login: (token: string, user: User) => void;
+  logout: () => void;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initAuth = () => {
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('user');
-      
-      if (token && userData) {
-        try {
-          const parsedUser: User = JSON.parse(userData);
-          setUser(parsedUser);
-        } catch (error) {
-          console.error('Failed to parse user data:', error);
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
-        }
-      }
-      setLoading(false);
-    };
-
-    initAuth();
+    console.log('🔍 AuthProvider: Checking saved token...');
+    const savedToken = localStorage.getItem('authToken');
+    const savedUser = localStorage.getItem('user');
+    
+    if (savedToken && savedUser) {
+      console.log('✅ Found saved token and user');
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+      setIsAuthenticated(true);
+    } else {
+      console.log('❌ No saved token or user found');
+    }
+    setLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
-    try {
-      setLoading(true);
-      
-      if (!email || !password) {
-        throw new Error('Email và password là bắt buộc');
-      }
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const userData: User = {
-        id: '1',
-        name: 'Nguyễn Trọng Đức',
-        email,
-        role: 'admin'
-      };
-      
-      localStorage.setItem('authToken', 'mock-jwt-token');
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+  const login = (newToken: string, newUser: User) => {
+    console.log('🚀 AuthProvider: Login called', { newToken, newUser });
+    localStorage.setItem('authToken', newToken);
+    localStorage.setItem('user', JSON.stringify(newUser));
+    setToken(newToken);
+    setUser(newUser);
+    setIsAuthenticated(true);
   };
 
-  const logout = (): void => {
+  const logout = () => {
+    console.log('🚪 AuthProvider: Logout called');
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    setToken(null);
     setUser(null);
-  };
-
-  const register = async (userData: RegisterData): Promise<void> => {
-    try {
-      setLoading(true);
-      
-      // Validate data
-      if (!userData.email || !userData.password || !userData.name) {
-        throw new Error('Tất cả các trường là bắt buộc');
-      }
-      
-      if (userData.password !== userData.confirmPassword) {
-        throw new Error('Mật khẩu xác nhận không khớp');
-      }
-      
-      // TODO: Implement actual API call
-      console.log('Register data:', userData);
-      
-      // Simulate registration success
-      const newUser: User = {
-        id: Date.now().toString(),
-        name: userData.name,
-        email: userData.email,
-        role: 'user'
-      };
-      
-      localStorage.setItem('authToken', 'mock-jwt-token');
-      localStorage.setItem('user', JSON.stringify(newUser));
-      setUser(newUser);
-      
-    } catch (error) {
-      console.error('Registration failed:', error);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    setIsAuthenticated(false);
   };
 
   const value = {
+    isAuthenticated,
+    token,
     user,
-    isAuthenticated: !!user,
     login,
     logout,
-    register,
     loading
   };
+
+  console.log('📊 AuthProvider state:', value);
 
   return (
     <AuthContext.Provider value={value}>
@@ -118,3 +76,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
+
+// ✅ EXPORT useAuth HOOK
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider. Make sure your component is wrapped with <AuthProvider>.');
+  }
+  return context;
+};
+
+// ✅ EXPORT USER TYPE
+export type { User };

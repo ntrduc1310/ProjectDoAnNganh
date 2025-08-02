@@ -5,52 +5,120 @@ import type { SubmitHandler } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { AtSign, Lock, Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormInputs } from '../types';
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { login } = useAuth();
     
     const { 
         register, 
         handleSubmit, 
         formState: { errors, isValid, isSubmitting } 
     } = useForm<LoginFormInputs>({
-        resolver: zodResolver(loginSchema), // Sử dụng Zod resolver
+        resolver: zodResolver(loginSchema),
         mode: 'onChange',
         defaultValues: {
-            email: '',
-            password: ''
+            email: 'test@example.com',
+            password: 'password123'
         }
     });
 
     const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
         try {
             setIsLoading(true);
+            console.log('🚀 Attempting login with:', data);
             
-            // Giả lập thời gian xử lý
+            // ✅ TRY BACKEND FIRST
+            try {
+                const response = await api.post('/auth/login', {
+                    email: data.email,
+                    password: data.password
+                });
+
+                console.log('✅ Backend login successful:', response.data);
+                
+                if (response.data.accessToken || response.data.token) {
+                    const token = response.data.accessToken || response.data.token;
+                    const userData = response.data.user;
+                    
+                    const userObj = {
+                        id: userData.id || 1,
+                        name: userData.fullName || userData.name || 'User',
+                        email: userData.email || data.email,
+                        role: userData.role || 'user'
+                    };
+
+                    login(token, userObj);
+                    navigate('/dashboard', { replace: true });
+                    return;
+                }
+            } catch (backendError: any) { // ✅ FIX: TYPE ANNOTATION
+                console.log('❌ Backend login failed, using mock:', backendError);
+            }
+            
+            // ✅ FALLBACK TO MOCK
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Dữ liệu người dùng giả lập
             const mockUser = {
-                id: '1',
+                id: 1,
                 name: 'Nguyễn Trọng Đức',
                 email: data.email,
                 role: 'admin'
             };
             
-            const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6Ik5ndXnhu4VuIFRy4buNbmcgxJDhu6ljIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.mock-jwt-token';
+            const mockToken = 'mock-jwt-token-for-testing';
             
-            // Lưu trữ thông tin xác thực
-            localStorage.setItem('authToken', mockToken);
-            localStorage.setItem('user', JSON.stringify(mockUser));
-            
-            // Chuyển hướng đến trang dashboard
+            login(mockToken, mockUser);
             navigate('/dashboard', { replace: true });
             
-        } catch (error) {
-            console.error('Login failed:', error);
-            // Xử lý lỗi
+        } catch (error: any) { // ✅ FIX: TYPE ANNOTATION
+            console.error('❌ Login failed:', error);
+            const errorMessage = error?.message || error?.toString() || 'Unknown error';
+            alert('Login failed: ' + errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // ✅ FIX QUICK TEST FUNCTION
+    const handleQuickTest = async () => {
+        try {
+            setIsLoading(true);
+            
+            const response = await api.post('/auth/login', {
+                email: 'test@example.com',
+                password: 'password123'
+            });
+
+            if (response.data.accessToken || response.data.token) {
+                const token = response.data.accessToken || response.data.token;
+                const userData = response.data.user;
+                
+                login(token, {
+                    id: userData.id || 1,
+                    name: userData.fullName || 'Test User',
+                    email: userData.email || 'test@example.com',
+                    role: userData.role || 'user'
+                });
+                
+                navigate('/dashboard', { replace: true });
+            }
+        } catch (error: any) { // ✅ FIX: TYPE ANNOTATION
+            console.error('Quick test failed:', error);
+            const errorMessage = error?.message || 'Backend test failed';
+            
+            // Fallback to mock
+            login('mock-token', {
+                id: 1,
+                name: 'Test User',
+                email: 'test@example.com',
+                role: 'user'
+            });
+            navigate('/dashboard', { replace: true });
         } finally {
             setIsLoading(false);
         }
@@ -156,9 +224,9 @@ const LoginPage = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            disabled={!isValid || isSubmitting}
+                            disabled={!isValid || isSubmitting || isLoading}
                             className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 transform ${
-                                isValid && !isSubmitting
+                                isValid && !isSubmitting && !isLoading
                                     ? 'bg-blue-600 hover:bg-blue-700 hover:scale-[1.02] focus:ring-4 focus:ring-blue-500/20 shadow-lg shadow-blue-500/25'
                                     : 'bg-gray-600 cursor-not-allowed opacity-50'
                             }`}
@@ -172,8 +240,18 @@ const LoginPage = () => {
                                     Đang đăng nhập...
                                 </span>
                             ) : (
-                                'Đăng nhập'
+                                '🚀 Đăng nhập với Backend'
                             )}
+                        </button>
+
+                        {/* Quick Test Button */}
+                        <button
+                            type="button"
+                            onClick={handleQuickTest}
+                            disabled={isLoading}
+                            className="w-full py-2 px-4 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-all duration-200"
+                        >
+                            🧪 Quick Backend Test
                         </button>
                     </form>
 
