@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext'; // ✅ FIX IMPORT
 import { 
   Bell, 
   Settings, 

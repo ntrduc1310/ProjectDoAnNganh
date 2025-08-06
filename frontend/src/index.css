@@ -23,3 +23,21 @@ html, body {
 - body { display: flex; place-items: center; }
 - hoặc bất kỳ style cũ nào khác
 */
+
+.task-modal-container {
+  height: 80vh;
+}
+
+.progress-bar {
+  height: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: var(--progress, 0%);
+  transition: width 0.3s ease;
+}
+
+.progress-fill[data-progress] {
+  width: attr(data-progress);
+}

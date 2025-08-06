@@ -77,7 +77,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// ✅ EXPORT useAuth HOOK
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -86,5 +85,4 @@ export const useAuth = () => {
   return context;
 };
 
-// ✅ EXPORT USER TYPE
 export type { User };

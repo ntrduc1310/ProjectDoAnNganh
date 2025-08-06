@@ -1,22 +1,28 @@
+networks:
+  doannganh-network:
+    driver: bridge
+
 services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     container_name: doannganh-postgres
     environment:
-      POSTGRES_DB: doannganh_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      # ✅ FIX: MATCH VỚI APPLICATION-DOCKER.PROPERTIES
+      POSTGRES_DB: doannganh
+      POSTGRES_USER: postgres  
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
       # Mount data directory for persistence
       - postgres_data:/var/lib/postgresql/data
-      # Mount SQL files for auto-initialization
+      # ✅ FIX: ĐƯỜNG DẪN ĐÚNG (backend/backend thay vì backend)
       - ./backend/backend/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./backend/backend/src/main/resources/data.sql:/docker-entrypoint-initdb.d/02-data.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d doannganh_db"]
+      # ✅ FIX: DATABASE NAME
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doannganh"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,11 +33,17 @@ services:
   # Backend Spring Boot
   backend:
     build:
+      # ✅ FIX: ĐƯỜNG DẪN ĐÚNG 
       context: ./backend/backend
       dockerfile: Dockerfile
     container_name: doannganh-backend
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      # ✅ FIX: DATABASE URL & PASSWORD
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/doannganh
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
     ports:
       - "8080:8080"
     depends_on:
@@ -46,19 +58,16 @@ services:
     image: dpage/pgadmin4:latest
     container_name: doannganh-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@doannganh.com
-      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
     depends_on:
       - postgres
+    restart: unless-stopped
     networks:
       - doannganh-network
 
 volumes:
   postgres_data:
     driver: local
-
-networks:
-  doannganh-network:
-    driver: bridge

@@ -12,6 +12,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // ✅ ADD ERROR STATE
     const { login } = useAuth();
     
     const { 
@@ -30,6 +31,7 @@ const LoginPage = () => {
     const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
         try {
             setIsLoading(true);
+            setErrorMessage(null); // ✅ CLEAR PREVIOUS ERRORS
             console.log('🚀 Attempting login with:', data);
             
             // ✅ TRY BACKEND FIRST
@@ -56,8 +58,10 @@ const LoginPage = () => {
                     navigate('/dashboard', { replace: true });
                     return;
                 }
-            } catch (backendError: any) { // ✅ FIX: TYPE ANNOTATION
+            } catch (backendError: any) {
                 console.log('❌ Backend login failed, using mock:', backendError);
+                // ✅ SET ERROR MESSAGE FOR BACKEND FAILURE
+                setErrorMessage('Backend không phản hồi, sử dụng chế độ demo');
             }
             
             // ✅ FALLBACK TO MOCK
@@ -75,10 +79,11 @@ const LoginPage = () => {
             login(mockToken, mockUser);
             navigate('/dashboard', { replace: true });
             
-        } catch (error: any) { // ✅ FIX: TYPE ANNOTATION
+        } catch (error: any) {
             console.error('❌ Login failed:', error);
-            const errorMessage = error?.message || error?.toString() || 'Unknown error';
-            alert('Login failed: ' + errorMessage);
+            // ✅ USE ERROR MESSAGE STATE
+            const errorMsg = error?.message || error?.toString() || 'Đăng nhập thất bại';
+            setErrorMessage(errorMsg);
         } finally {
             setIsLoading(false);
         }
@@ -88,6 +93,7 @@ const LoginPage = () => {
     const handleQuickTest = async () => {
         try {
             setIsLoading(true);
+            setErrorMessage(null); // ✅ CLEAR PREVIOUS ERRORS
             
             const response = await api.post('/auth/login', {
                 email: 'test@example.com',
@@ -107,9 +113,10 @@ const LoginPage = () => {
                 
                 navigate('/dashboard', { replace: true });
             }
-        } catch (error: any) { // ✅ FIX: TYPE ANNOTATION
+        } catch (error: any) {
             console.error('Quick test failed:', error);
-            const errorMessage = error?.message || 'Backend test failed';
+            // ✅ USE ERROR MESSAGE STATE
+            setErrorMessage('Backend test thất bại, chuyển sang chế độ demo');
             
             // Fallback to mock
             login('mock-token', {
@@ -151,6 +158,16 @@ const LoginPage = () => {
 
                 {/* Form Container */}
                 <div className="bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-gray-700">
+                    {/* ✅ ERROR MESSAGE DISPLAY */}
+                    {errorMessage && (
+                        <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                            <p className="text-yellow-400 text-sm flex items-center">
+                                <span className="mr-2">⚠️</span>
+                                {errorMessage}
+                            </p>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         {/* Email Field */}
                         <div>
@@ -249,7 +266,7 @@ const LoginPage = () => {
                             type="button"
                             onClick={handleQuickTest}
                             disabled={isLoading}
-                            className="w-full py-2 px-4 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-all duration-200"
+                            className="w-full py-2 px-4 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             🧪 Quick Backend Test
                         </button>

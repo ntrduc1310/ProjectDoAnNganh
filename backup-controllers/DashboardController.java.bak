@@ -1,0 +1,61 @@
+package com.doananganh.backend.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/dashboard")
+@CrossOrigin(origins = "*")
+public class DashboardController {
+
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getDashboardStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalTasks", 0);
+        stats.put("completedTasks", 0);
+        stats.put("inProgressTasks", 0);
+        stats.put("todoTasks", 0);
+        stats.put("totalProjects", 0);
+        stats.put("activeProjects", 0);
+        stats.put("teamMembers", 0);
+        stats.put("efficiency", 85.5);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/activities")
+    public ResponseEntity<List<Map<String, Object>>> getRecentActivities() {
+        List<Map<String, Object>> activities = new ArrayList<>();
+        
+        Map<String, Object> activity1 = new HashMap<>();
+        activity1.put("id", 1);
+        activity1.put("message", "New task created: Test Database Connection");
+        activity1.put("timestamp", System.currentTimeMillis());
+        activity1.put("type", "TASK_CREATED");
+        
+        activities.add(activity1);
+        return ResponseEntity.ok(activities);
+    }
+
+    @GetMapping("/projects/overview")
+    public ResponseEntity<Map<String, Object>> getProjectsOverview() {
+        Map<String, Object> overview = new HashMap<>();
+        overview.put("totalProjects", 0);
+        overview.put("activeProjects", 0);
+        overview.put("completedProjects", 0);
+        overview.put("onHoldProjects", 0);
+        return ResponseEntity.ok(overview);
+    }
+}

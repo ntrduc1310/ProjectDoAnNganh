@@ -7,15 +7,16 @@ spring:
     url: jdbc:postgresql://postgres:5432/doannganh_db
     username: postgres
     password: password
+    driver-class-name: org.postgresql.Driver
     
   jpa:
     hibernate:
-      ddl-auto: create-drop  # Let schema.sql handle structure
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        '[format_sql]': true  # ✅ ESCAPED KEY
         
   sql:
     init:
@@ -25,6 +26,8 @@ spring:
 
 server:
   port: 8080
+  servlet:
+    context-path: /api
 
 # Docker logging
 logging:
@@ -34,9 +37,13 @@ logging:
         backend: DEBUG
     org:
       springframework:
-        web: DEBUG
+        web: INFO
       hibernate:
         SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
 # Health check endpoints
 management:
