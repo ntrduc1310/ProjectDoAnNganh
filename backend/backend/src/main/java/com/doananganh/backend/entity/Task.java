@@ -28,7 +28,7 @@ import jakarta.persistence.Table;
 @Table(name = "tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -82,6 +82,9 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAttachment> attachments = new ArrayList<>();
 
+    @Column(name = "assignee_email", length = 100)
+    private String assigneeEmail;
+
     // Constructors
     public Task() {}
 
@@ -133,4 +136,12 @@ public class Task {
 
     public List<TaskAttachment> getAttachments() { return attachments; }
     public void setAttachments(List<TaskAttachment> attachments) { this.attachments = attachments; }
+
+    public String getAssigneeEmail() {
+        return assigneeEmail;
+    }
+
+    public void setAssigneeEmail(String assigneeEmail) {
+        this.assigneeEmail = assigneeEmail;
+    }
 }

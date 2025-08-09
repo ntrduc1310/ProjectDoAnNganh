@@ -9,7 +9,6 @@ SET client_encoding = 'UTF8';
 -- ====================================
 -- DROP TABLES IF EXIST
 -- ====================================
-
 DROP TABLE IF EXISTS ai_suggestions CASCADE;
 DROP TABLE IF EXISTS project_metrics CASCADE;
 DROP TABLE IF EXISTS skill_matrix CASCADE;

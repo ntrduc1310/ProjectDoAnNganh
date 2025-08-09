@@ -1,325 +1,127 @@
 package com.doananganh.backend.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.doananganh.backend.dto.request.CreateTaskRequest;
-import com.doananganh.backend.dto.response.TaskDetailResponse;
-import com.doananganh.backend.entity.Task;
-import com.doananganh.backend.enums.TaskStatus;
-import com.doananganh.backend.service.TaskService;
-
-import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@RequestMapping("/tasks")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("/api/tasks")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class TaskController {
-
-    @Autowired(required = false)
-    private TaskService taskService;
-
-    // ✅ FIXED: Make final and use synchronized list for thread safety
-    private static final List<Map<String, Object>> mockTasks = new ArrayList<>();
-
-    // ✅ FIXED: Use instance block instead of static block to avoid warnings
-    {
-        if (mockTasks.isEmpty()) {
-            initializeMockData();
-        }
-    }
-
-    // ✅ Extract initialization to separate method
-    private static synchronized void initializeMockData() {
-        if (!mockTasks.isEmpty()) return; // Double-check to avoid duplicate initialization
-
+    
+    private final List<Map<String, Object>> tasks = Collections.synchronizedList(new ArrayList<>());
+    private final AtomicLong idGenerator = new AtomicLong(1);
+    
+    public TaskController() {
+        // Thêm 3 tasks mẫu
         Map<String, Object> task1 = new HashMap<>();
-        task1.put("id", 1L);
-        task1.put("title", "Setup Project Structure");
-        task1.put("description", "Initialize the project with basic structure");
-        task1.put("priority", "HIGH");
+        task1.put("id", idGenerator.getAndIncrement());
+        task1.put("title", "Thiết kế giao diện người dùng");
+        task1.put("description", "Tạo mockup và prototype cho ứng dụng");
         task1.put("status", "IN_PROGRESS");
+        task1.put("priority", "HIGH");
+        task1.put("assigneeId", 1L);
         task1.put("projectId", 1L);
-        task1.put("assigneeEmail", "dev@example.com");
-        task1.put("createdAt", LocalDateTime.now().toString());
-        mockTasks.add(task1);
-
+        task1.put("dueDate", "2024-02-15");
+        tasks.add(task1);
+        
         Map<String, Object> task2 = new HashMap<>();
-        task2.put("id", 2L);
-        task2.put("title", "Design Database Schema");
-        task2.put("description", "Create ERD and database tables");
-        task2.put("priority", "MEDIUM");
+        task2.put("id", idGenerator.getAndIncrement());
+        task2.put("title", "Phát triển API backend");
+        task2.put("description", "Tạo REST API cho quản lý tasks");
         task2.put("status", "TODO");
+        task2.put("priority", "MEDIUM");
+        task2.put("assigneeId", 2L);
         task2.put("projectId", 1L);
-        task2.put("assigneeEmail", "designer@example.com");
-        task2.put("createdAt", LocalDateTime.now().toString());
-        mockTasks.add(task2);
+        task2.put("dueDate", "2024-02-20");
+        tasks.add(task2);
+        
+        Map<String, Object> task3 = new HashMap<>();
+        task3.put("id", idGenerator.getAndIncrement());
+        task3.put("title", "Viết test cases");
+        task3.put("description", "Tạo unit tests và integration tests");
+        task3.put("status", "COMPLETED");
+        task3.put("priority", "LOW");
+        task3.put("assigneeId", 3L);
+        task3.put("projectId", 1L);
+        task3.put("dueDate", "2024-02-10");
+        tasks.add(task3);
+        
+        System.out.println("✅ TaskController initialized with " + tasks.size() + " sample tasks");
     }
-
+    
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getAllTasks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        
-        System.out.println("✅ GET /tasks called - page: " + page + ", size: " + size);
-        
-        try {
-            if (taskService != null) {
-                Pageable pageable = PageRequest.of(page, size);
-                Page<Task> taskPage = taskService.getAllTasks(pageable);
-                System.out.println("📋 Found " + taskPage.getContent().size() + " tasks from service");
-                
-                // ✅ FIXED: Handle missing methods in Task entity
-                List<Map<String, Object>> taskList = new ArrayList<>();
-                for (Task task : taskPage.getContent()) {
-                    Map<String, Object> taskMap = new HashMap<>();
-                    taskMap.put("id", task.getId());
-                    taskMap.put("title", task.getTitle());
-                    taskMap.put("description", task.getDescription());
-                    taskMap.put("priority", task.getPriority().name());
-                    taskMap.put("status", task.getStatus().name());
-                    
-                    // ✅ FIXED: Handle project relationship properly
-                    if (task.getProject() != null) {
-                        taskMap.put("projectId", task.getProject().getId());
-                        taskMap.put("projectName", task.getProject().getName());
-                    } else {
-                        taskMap.put("projectId", null);
-                        taskMap.put("projectName", null);
-                    }
-                    
-                    // ✅ FIXED: Handle assignee relationship properly
-                    if (task.getAssignee() != null) {
-                        taskMap.put("assigneeEmail", task.getAssignee().getEmail());
-                        taskMap.put("assigneeName", task.getAssignee().getFullName());
-                    } else {
-                        taskMap.put("assigneeEmail", null);
-                        taskMap.put("assigneeName", null);
-                    }
-                    
-                    taskMap.put("createdAt", task.getCreatedAt() != null ? task.getCreatedAt().toString() : null);
-                    taskMap.put("updatedAt", task.getUpdatedAt() != null ? task.getUpdatedAt().toString() : null);
-                    taskMap.put("progress", task.getProgress());
-                    taskMap.put("dueDate", task.getDueDate() != null ? task.getDueDate().toString() : null);
-                    
-                    taskList.add(taskMap);
-                }
-                return ResponseEntity.ok(taskList);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error in getAllTasks: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        // ✅ Return mock tasks
-        System.out.println("📋 Returning " + mockTasks.size() + " mock tasks");
-        return ResponseEntity.ok(new ArrayList<>(mockTasks)); // Return copy to avoid external modification
+    public ResponseEntity<List<Map<String, Object>>> getAllTasks() {
+        System.out.println("🔍 GET /api/tasks - Returning " + tasks.size() + " tasks");
+        return ResponseEntity.ok(tasks);
     }
-
+    
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createTask(@Valid @RequestBody CreateTaskRequest request) {
-        System.out.println("✅ POST /tasks called");
-        System.out.println("📤 Request data: " + request);
-        System.out.println("📤 Title: " + request.getTitle());
-        System.out.println("📤 Description: " + request.getDescription());
-        System.out.println("📤 Priority: " + request.getPriority());
-        System.out.println("📤 ProjectId: " + request.getProjectId());
+    public ResponseEntity<Map<String, Object>> createTask(@RequestBody Map<String, Object> taskData) {
+        System.out.println("➕ POST /api/tasks - Creating new task: " + taskData);
         
-        try {
-            if (taskService != null) {
-                TaskDetailResponse task = taskService.createTask(request);
-                Map<String, Object> response = new HashMap<>();
-                response.put("task", task);
-                response.put("message", "Task created successfully");
-                System.out.println("✅ Task created successfully via service");
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error creating task via service: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        // ✅ Create mock task and add to list
-        Long newId = System.currentTimeMillis();
         Map<String, Object> newTask = new HashMap<>();
-        newTask.put("id", newId);
-        newTask.put("title", request.getTitle());
-        newTask.put("description", request.getDescription());
-        newTask.put("priority", request.getPriority().name());
-        newTask.put("status", TaskStatus.TODO.name());
-        newTask.put("projectId", request.getProjectId());
-        newTask.put("assigneeEmail", request.getAssigneeEmail());
-        newTask.put("createdAt", LocalDateTime.now().toString());
-        newTask.put("progress", 0.0);
-        newTask.put("updatedAt", LocalDateTime.now().toString());
+        newTask.put("id", idGenerator.getAndIncrement());
+        newTask.put("title", taskData.get("title"));
+        newTask.put("description", taskData.get("description"));
+        newTask.put("status", taskData.getOrDefault("status", "TODO"));
+        newTask.put("priority", taskData.getOrDefault("priority", "MEDIUM"));
+        newTask.put("assigneeId", taskData.get("assigneeId"));
+        newTask.put("projectId", taskData.getOrDefault("projectId", 1L));
+        newTask.put("dueDate", taskData.get("dueDate"));
         
-        // Add to mock list so it appears in getAllTasks
-        synchronized (mockTasks) {
-            mockTasks.add(newTask);
-        }
+        tasks.add(newTask);
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("task", newTask);
-        response.put("message", "Task created successfully (mock)");
-        
-        System.out.println("✅ Mock task created successfully with ID: " + newId);
-        System.out.println("✅ Total mock tasks: " + mockTasks.size());
-        
-        return ResponseEntity.ok(response);
+        System.out.println("✅ Task created with ID: " + newTask.get("id"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getTaskById(@PathVariable Long id) {
-        System.out.println("✅ GET /tasks/" + id + " called");
+        System.out.println("🔍 GET /api/tasks/" + id);
         
-        try {
-            if (taskService != null) {
-                TaskDetailResponse task = taskService.getTaskById(id);
-                Map<String, Object> response = new HashMap<>();
-                response.put("id", task.getId());
-                response.put("title", task.getTitle());
-                response.put("description", task.getDescription());
-                response.put("priority", task.getPriority());
-                response.put("status", task.getStatus());
-                response.put("projectId", task.getProjectId());
-                response.put("assigneeEmail", task.getAssigneeEmail());
-                response.put("createdAt", task.getCreatedAt());
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error getting task by id: " + e.getMessage());
-        }
-        
-        // Check mock tasks
-        synchronized (mockTasks) {
-            for (Map<String, Object> task : mockTasks) {
-                if (task.get("id").equals(id)) {
-                    return ResponseEntity.ok(new HashMap<>(task)); // Return copy
-                }
-            }
-        }
-        
-        return ResponseEntity.notFound().build();
+        return tasks.stream()
+                .filter(task -> Objects.equals(task.get("id"), id))
+                .findFirst()
+                .map(task -> ResponseEntity.ok(task))
+                .orElse(ResponseEntity.notFound().build());
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteTask(@PathVariable Long id) {
-        System.out.println("✅ DELETE /tasks/" + id + " called");
-        
-        try {
-            if (taskService != null) {
-                taskService.deleteTask(id);
-                Map<String, Object> response = new HashMap<>();
-                response.put("message", "Task deleted successfully");
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error deleting task: " + e.getMessage());
-        }
-        
-        // Remove from mock list
-        synchronized (mockTasks) {
-            mockTasks.removeIf(task -> task.get("id").equals(id));
-        }
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Task deleted successfully (mock)");
-        return ResponseEntity.ok(response);
-    }
-
+    
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateTask(
-            @PathVariable Long id,
-            @Valid @RequestBody CreateTaskRequest request) {
+    public ResponseEntity<Map<String, Object>> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> taskData) {
+        System.out.println("📝 PUT /api/tasks/" + id + " - Updating task: " + taskData);
         
-        System.out.println("✅ PUT /tasks/" + id + " called");
-        
-        try {
-            if (taskService != null) {
-                TaskDetailResponse task = taskService.updateTask(id, request);
-                Map<String, Object> response = new HashMap<>();
-                response.put("task", task);
-                response.put("message", "Task updated successfully");
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error updating task: " + e.getMessage());
-        }
-        
-        // Update mock task
-        synchronized (mockTasks) {
-            for (Map<String, Object> task : mockTasks) {
-                if (task.get("id").equals(id)) {
-                    task.put("title", request.getTitle());
-                    task.put("description", request.getDescription());
-                    task.put("priority", request.getPriority().name());
-                    task.put("updatedAt", LocalDateTime.now().toString());
-                    
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("task", new HashMap<>(task));
-                    response.put("message", "Task updated successfully (mock)");
-                    return ResponseEntity.ok(response);
-                }
+        for (int i = 0; i < tasks.size(); i++) {
+            Map<String, Object> task = tasks.get(i);
+            if (Objects.equals(task.get("id"), id)) {
+                task.put("title", taskData.getOrDefault("title", task.get("title")));
+                task.put("description", taskData.getOrDefault("description", task.get("description")));
+                task.put("status", taskData.getOrDefault("status", task.get("status")));
+                task.put("priority", taskData.getOrDefault("priority", task.get("priority")));
+                task.put("assigneeId", taskData.getOrDefault("assigneeId", task.get("assigneeId")));
+                task.put("dueDate", taskData.getOrDefault("dueDate", task.get("dueDate")));
+                
+                System.out.println("✅ Task updated: " + task);
+                return ResponseEntity.ok(task);
             }
         }
         
         return ResponseEntity.notFound().build();
     }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Map<String, Object>> updateTaskStatus(
-            @PathVariable Long id, 
-            @RequestParam String status) {
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        System.out.println("🗑️ DELETE /api/tasks/" + id);
         
-        System.out.println("✅ PUT /tasks/" + id + "/status called with status: " + status);
+        boolean removed = tasks.removeIf(task -> Objects.equals(task.get("id"), id));
         
-        try {
-            if (taskService != null) {
-                TaskStatus taskStatus = TaskStatus.valueOf(status.toUpperCase());
-                TaskDetailResponse task = taskService.updateTaskStatus(id, taskStatus);
-                Map<String, Object> response = new HashMap<>();
-                response.put("task", task);
-                response.put("message", "Task status updated successfully");
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error updating task status: " + e.getMessage());
+        if (removed) {
+            System.out.println("✅ Task deleted successfully");
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        
-        // Update mock task status
-        synchronized (mockTasks) {
-            for (Map<String, Object> task : mockTasks) {
-                if (task.get("id").equals(id)) {
-                    task.put("status", status.toUpperCase());
-                    task.put("updatedAt", LocalDateTime.now().toString());
-                    
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("task", new HashMap<>(task));
-                    response.put("message", "Task status updated successfully (mock)");
-                    return ResponseEntity.ok(response);
-                }
-            }
-        }
-        
-        return ResponseEntity.notFound().build();
     }
 }

@@ -32,8 +32,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const loadTaskData = async () => {
     try {
       setLoading(true);
-      const response = await tasksApi.getTaskById(taskId);
-      setTask(response.data);
+      const taskData = await tasksApi.getTaskById(taskId); // ✅ FIXED: No .data property
+      setTask(taskData);
     } catch (error) {
       console.error('❌ Failed to load task:', error);
     } finally {
@@ -44,8 +44,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const loadComments = async () => {
     try {
       setCommentsLoading(true);
-      const response = await taskCommentsApi.getCommentsByTask(taskId);
-      setComments(response.data);
+      const commentsData = await taskCommentsApi.getCommentsByTask(taskId); // ✅ FIXED: No .data property
+      setComments(commentsData);
     } catch (error) {
       console.error('❌ Failed to load comments:', error);
       setComments([]);
@@ -70,7 +70,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     }
   };
 
-  const updateTaskStatus = async (newStatus: string) => {
+  // ✅ FIXED: Proper type for status parameter
+  const updateTaskStatus = async (newStatus: Task['status']) => {
     try {
       await tasksApi.updateTaskStatus(taskId, newStatus);
       await loadTaskData();
@@ -159,7 +160,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                         <h3 className="text-sm font-medium text-gray-500 mb-2">Status</h3>
                         <select
                           value={task?.status || ''}
-                          onChange={(e) => updateTaskStatus(e.target.value)}
+                          onChange={(e) => updateTaskStatus(e.target.value as Task['status'])} // ✅ FIXED: Type casting
                           className={`w-full px-3 py-2 rounded-lg border ${getStatusColor(task?.status || '')}`}
                           aria-label="Task status"
                           title="Change task status"
@@ -177,7 +178,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                         <div className="flex items-center space-x-2">
                           <User size={16} className="text-gray-400" />
                           <span className="text-gray-900">
-                            {task?.assigneeName || 'Unassigned'}
+                            {task?.assigneeName || task?.assigneeEmail || 'Unassigned'} {/* ✅ FIXED: Fallback chain */}
                           </span>
                         </div>
                       </div>
@@ -187,7 +188,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                         <div className="flex items-center space-x-2">
                           <Calendar size={16} className="text-gray-400" />
                           <span className="text-gray-900">
-                            {task?.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'}
+                            {task?.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No due date'} {/* ✅ FIXED: Safe access */}
                           </span>
                         </div>
                       </div>
@@ -195,10 +196,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                       <div>
                         <h3 className="text-sm font-medium text-gray-500 mb-2">Progress</h3>
                         <div className="flex items-center space-x-2">
-                          <div className="flex-1 bg-gray-200 rounded-full progress-bar">
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
                             <div 
-                              className="bg-blue-600 rounded-full progress-fill"
-                              data-progress={`${task?.progress || 0}%`}
+                              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${task?.progress || 0}%` }} // ✅ FIXED: Inline style
                             />
                           </div>
                           <span className="text-sm text-gray-600">{task?.progress || 0}%</span>
@@ -234,7 +235,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                             </div>
                             <div className="flex-1">
                               <div className="text-sm font-medium text-gray-900">
-                                {comment.userFullName}
+                                {comment.userFullName || `User ${comment.userId}`} {/* ✅ FIXED: Safe access with fallback */}
                               </div>
                               <div className="text-xs text-gray-500">
                                 {new Date(comment.createdAt).toLocaleString()}

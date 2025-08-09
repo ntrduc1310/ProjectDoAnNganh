@@ -147,6 +147,13 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
+          <jvmArguments>
+            -Xms512m
+            -Xmx1024m
+            -XX:+UseG1GC
+            -XX:+UseStringDeduplication
+            -Dspring.profiles.active=local
+          </jvmArguments>
         </configuration>
       </plugin>
 

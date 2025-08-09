@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Direct API Test</h1>
+    <button onclick="testTasks()">Test /api/tasks</button>
+    <button onclick="testStats()">Test /api/dashboard/stats</button>
+    <div id="result"></div>
+
+    <script>
+        async function testTasks() {
+            try {
+                const response = await fetch('http://localhost:8082/api/tasks');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h3>Tasks Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h3>Tasks Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testStats() {
+            try {
+                const response = await fetch('http://localhost:8082/api/dashboard/stats');
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h3>Stats Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<h3>Stats Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

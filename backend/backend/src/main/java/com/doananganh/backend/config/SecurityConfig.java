@@ -26,10 +26,18 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/**").permitAll()  // ✅ Allow all requests for now
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/tasks/**").permitAll()
+                .requestMatchers("/dashboard/**").permitAll()
+                .requestMatchers("/projects/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/health").permitAll()
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions().disable());
+            .headers(headers -> headers
+                .frameOptions().sameOrigin() // For H2 Console
+                .httpStrictTransportSecurity(hstsConfig -> hstsConfig.disable())
+            );
 
         return http.build();
     }
@@ -38,28 +46,26 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // ✅ Allow all origins for development
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        
-        // ✅ Allow all methods
-        configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"
+        // ✅ Allow specific origins for production readiness
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:3000",
+            "http://localhost:5173", 
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173"
         ));
         
-        // ✅ Allow all headers
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+        
         configuration.setAllowedHeaders(List.of("*"));
-        
-        // ✅ Allow credentials
         configuration.setAllowCredentials(true);
-        
-        // ✅ Set max age
         configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         
-        System.out.println("✅ CORS configured to allow all origins and methods");
-        
+        System.out.println("✅ CORS configured for production-ready setup");
         return source;
     }
 

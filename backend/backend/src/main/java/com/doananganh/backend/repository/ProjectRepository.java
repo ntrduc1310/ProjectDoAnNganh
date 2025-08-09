@@ -1,6 +1,7 @@
 package com.doananganh.backend.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByManagerEmail(String managerEmail);
     
     List<Project> findByPriority(String priority);
+    
+    Optional<Project> findByName(String name);
     
     @Query("SELECT p FROM Project p WHERE p.status = :status AND p.priority = :priority")
     List<Project> findByStatusAndPriority(@Param("status") String status, @Param("priority") String priority);

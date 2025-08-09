@@ -1,47 +1,50 @@
 import axios from 'axios';
 
-// ✅ FIXED: Use port 8081 to match backend
-export const apiClient = axios.create({
-  baseURL: 'http://localhost:8081/api',  // Changed from 8080 to 8081
-  timeout: 15000,
+const API_BASE_URL = 'http://localhost:8082/api';
+
+// ✅ Request cache to prevent duplicate calls
+const requestCache = new Map<string, Promise<any>>();
+
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 5000, // ✅ Reduced timeout
   headers: {
     'Content-Type': 'application/json',
-  },
+  }
 });
 
-// Enhanced logging
+// ✅ Request interceptor with caching
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(`🔄 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-    console.log(`🌐 Full URL: ${config.baseURL}${config.url}`);
-    console.log(`📤 Request data:`, config.data);
+    // Add cache key for GET requests
+    if (config.method === 'get') {
+      const cacheKey = `${config.method}:${config.url}`;
+      if (requestCache.has(cacheKey)) {
+        return Promise.reject({ __CANCEL__: true, cache: requestCache.get(cacheKey) });
+      }
+    }
     return config;
   },
-  (error) => {
-    console.error('❌ Request error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
+// ✅ Response interceptor with cache cleanup
 apiClient.interceptors.response.use(
   (response) => {
-    console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url}`);
-    console.log(`📥 Response data:`, response.data);
+    // Clear cache for this request
+    const cacheKey = `${response.config.method}:${response.config.url}`;
+    requestCache.delete(cacheKey);
     return response;
   },
   (error) => {
-    console.error('❌ Response error:', error);
-    console.error('❌ Error details:', {
-      message: error.message,
-      code: error.code,
-      status: error.response?.status,
-      data: error.response?.data,
-      url: error.config?.url
-    });
+    if (error.__CANCEL__) {
+      return error.cache;
+    }
     return Promise.reject(error);
   }
 );
 
+// ✅ Types with required properties only
 export interface Task {
   id: number;
   title: string;
@@ -51,125 +54,112 @@ export interface Task {
   assigneeEmail?: string;
   assigneeName?: string;
   projectId: number;
-  projectName?: string;
-  progress?: number;
-  dueDate?: string;
   createdAt?: string;
   updatedAt?: string;
-  commentCount?: number;
+  progress?: number;
+  dueDate?: string;
+}
+
+export interface DashboardStats {
+  totalTasks: number;
+  completedTasks: number;
+  inProgressTasks: number;
+  totalProjects: number;
+  teamMembers: number;
 }
 
 export interface TaskComment {
   id: number;
-  taskId: number;
-  userId: number;
-  userFullName: string;
-  userEmail: string;
   content: string;
+  userId: number;
+  taskId: number;
   createdAt: string;
   updatedAt: string;
+  userFullName?: string;
 }
 
-export interface CreateCommentRequest {
-  taskId: number;
-  content: string;
-}
-
-// ✅ FIXED: Tasks API - Return List<Task> directly
+// ✅ Optimized API methods with caching
 export const tasksApi = {
-  getAllTasks: () =>
-    apiClient.get<Task[]>('/tasks'),  // Expect List<Task> directly
+  getAllTasks: (): Promise<Task[]> => {
+    // ✅ BYPASS CACHE FOR DEBUGGING
+    console.log('🔍 Calling getAllTasks...');
+    const promise = apiClient.get<Task[]>('/tasks').then(response => {
+      console.log('✅ Tasks response:', response.data);
+      return response.data;
+    }).catch(error => {
+      console.error('❌ Tasks API error:', error);
+      throw error;
+    });
+    return promise;
+  },
 
-  getTaskById: (id: number) =>
-    apiClient.get<Task>(`/tasks/${id}`),
+  getTaskById: (id: number): Promise<Task> =>
+    apiClient.get<Task>(`/tasks/${id}`).then(response => response.data),
 
-  createTask: (task: Omit<Task, 'id'>) => {
+  createTask: (task: Omit<Task, 'id'>): Promise<Task> => {
+    // Clear tasks cache when creating
+    requestCache.delete('get:/tasks');
+    
     const requestData = {
       title: task.title,
       description: task.description,
       priority: task.priority,
       projectId: task.projectId,
       assigneeEmail: task.assigneeEmail || null,
-      estimatedHours: null,
-      dueDate: null
     };
     
-    console.log('📤 Sending task creation request:', requestData);
-    return apiClient.post('/tasks', requestData);
+    return apiClient.post<{task: Task}>('/tasks', requestData)
+      .then(response => response.data.task);
   },
 
-  updateTask: (id: number, task: Partial<Task>) =>
-    apiClient.put<Task>(`/tasks/${id}`, task),
-
-  updateTaskStatus: (id: number, status: string) =>
-    apiClient.put(`/tasks/${id}/status?status=${status}`),
-
-  deleteTask: (id: number) =>
-    apiClient.delete(`/tasks/${id}`)
+  updateTaskStatus: (id: number, status: Task['status']): Promise<Task> => {
+    // Clear cache when updating
+    requestCache.delete('get:/tasks');
+    
+    return apiClient.put<{task: Task}>(`/tasks/${id}/status?status=${status}`)
+      .then(response => response.data.task);
+  }
 };
 
-// ✅ Task Comments API
-export const taskCommentsApi = {
-  getCommentsByTask: (taskId: number) =>
-    apiClient.get<TaskComment[]>(`/task-comments/task/${taskId}`),
-
-  createComment: (data: CreateCommentRequest) =>
-    apiClient.post('/task-comments', data, {
-      headers: { 'User-Email': 'admin@example.com' }
-    }),
-
-  updateComment: (commentId: number, content: string) =>
-    apiClient.put(`/task-comments/${commentId}`, { content }, {
-      headers: { 'User-Email': 'admin@example.com' }
-    }),
-
-  deleteComment: (commentId: number) =>
-    apiClient.delete(`/task-comments/${commentId}`, {
-      headers: { 'User-Email': 'admin@example.com' }
-    }),
-
-  getRecentComments: (hours: number = 24) =>
-    apiClient.get<TaskComment[]>(`/task-comments/recent?hours=${hours}`)
-};
-
-// ✅ Dashboard API
 export const dashboardApi = {
-  getStats: () =>
-    apiClient.get('/dashboard/stats'),
+  getStats: (): Promise<DashboardStats> => {
+    const cacheKey = 'get:/dashboard/stats';
+    if (requestCache.has(cacheKey)) {
+      return requestCache.get(cacheKey)!;
+    }
+    
+    const promise = apiClient.get<DashboardStats>('/dashboard/stats')
+      .then(response => response.data)
+      .catch(() => ({
+        totalTasks: 0,
+        completedTasks: 0,
+        inProgressTasks: 0,
+        totalProjects: 0,
+        teamMembers: 0
+      }));
+    
+    requestCache.set(cacheKey, promise);
+    return promise;
+  }
 };
 
-// ✅ Projects API
-export const projectsApi = {
-  getAllProjects: () =>
-    apiClient.get('/projects'),
+export const taskCommentsApi = {
+  getCommentsByTask: (taskId: number): Promise<TaskComment[]> =>
+    apiClient.get<TaskComment[]>(`/tasks/${taskId}/comments`)
+      .then(response => response.data)
+      .catch(() => []),
 
-  getProjectById: (id: number) =>
-    apiClient.get(`/projects/${id}`),
-
-  createProject: (project: any) =>
-    apiClient.post('/projects', project),
-
-  updateProject: (id: number, project: any) =>
-    apiClient.put(`/projects/${id}`, project),
-
-  deleteProject: (id: number) =>
-    apiClient.delete(`/projects/${id}`)
+  createComment: (request: { taskId: number; content: string }): Promise<TaskComment> =>
+    apiClient.post<TaskComment>('/comments', request).then(response => response.data)
 };
 
-// ✅ Analytics API
-export const analyticsApi = {
-  getDashboardAnalytics: () =>
-    apiClient.get('/analytics/dashboard'),
-
-  getProjectAnalytics: (projectId: number) =>
-    apiClient.get(`/analytics/project/${projectId}`),
-
-  getUserAnalytics: (userId: number) =>
-    apiClient.get(`/analytics/user/${userId}`),
-
-  getRecentActivity: (hours: number = 24) =>
-    apiClient.get(`/analytics/recent?hours=${hours}`)
+export const checkApiHealth = async (): Promise<boolean> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/dashboard/stats`, { timeout: 3000 });
+    return response.status === 200;
+  } catch {
+    return false;
+  }
 };
 
-// Default export
 export default apiClient;
