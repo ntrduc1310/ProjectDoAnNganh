@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, X, AlertCircle, RefreshCw } from 'lucide-react';
 import { tasksApi, dashboardApi, checkApiHealth, type Task, type DashboardStats } from '../services/api';
+import { ApiDebugComponent } from '../components/ApiDebugComponent';
 
 export const DashboardPage: React.FC = () => {
   // State management
@@ -192,6 +193,9 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="p-6">
+      {/* DEBUG COMPONENT - Remove this after fixing */}
+      <ApiDebugComponent />
+      
       {/* Header with connection status */}
       <div className="mb-8">
         <div className="flex items-center justify-between">

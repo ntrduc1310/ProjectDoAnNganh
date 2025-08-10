@@ -12,7 +12,7 @@
     <script>
         async function testTasks() {
             try {
-                const response = await fetch('http://localhost:8082/api/tasks');
+                const response = await fetch('http://localhost:8081/api/tasks');
                 const data = await response.json();
                 document.getElementById('result').innerHTML = 
                     '<h3>Tasks Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
@@ -24,7 +24,7 @@
 
         async function testStats() {
             try {
-                const response = await fetch('http://localhost:8082/api/dashboard/stats');
+                const response = await fetch('http://localhost:8081/api/dashboard/stats');
                 const data = await response.json();
                 document.getElementById('result').innerHTML = 
                     '<h3>Stats Response:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';

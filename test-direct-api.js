@@ -1,7 +1,7 @@
 // Simple test with direct fetch - no cache, no axios
 console.log('🧪 Testing Tasks API...');
 
-fetch('http://localhost:8082/api/tasks')
+fetch('http://localhost:8081/api/tasks')
   .then(response => {
     console.log('📡 Response status:', response.status);
     console.log('📡 Response headers:', [...response.headers.entries()]);
@@ -16,7 +16,7 @@ fetch('http://localhost:8082/api/tasks')
   });
 
 // Test stats too
-fetch('http://localhost:8082/api/dashboard/stats')
+fetch('http://localhost:8081/api/dashboard/stats')
   .then(response => response.json())
   .then(data => {
     console.log('✅ Stats data:', data);

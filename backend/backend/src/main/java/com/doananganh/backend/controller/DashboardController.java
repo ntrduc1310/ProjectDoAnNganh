@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/dashboard")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@RequestMapping("/api/dashboard")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:5174"})
 public class DashboardController {
 
     private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8082/api';
+const API_BASE_URL = 'http://localhost:8081/api';
 
 // ✅ Request cache to prevent duplicate calls
 const requestCache = new Map<string, Promise<any>>();
@@ -13,7 +13,8 @@ const apiClient = axios.create({
   }
 });
 
-// ✅ Request interceptor with caching
+// ✅ DISABLED Request interceptor for debugging
+/*
 apiClient.interceptors.request.use(
   (config) => {
     // Add cache key for GET requests
@@ -27,8 +28,10 @@ apiClient.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+*/
 
-// ✅ Response interceptor with cache cleanup
+// ✅ DISABLED Response interceptor for debugging  
+/*
 apiClient.interceptors.response.use(
   (response) => {
     // Clear cache for this request
@@ -43,6 +46,7 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+*/
 
 // ✅ Types with required properties only
 export interface Task {

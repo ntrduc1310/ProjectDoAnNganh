@@ -27,11 +27,16 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/tasks/**").permitAll()
+                .requestMatchers("/api/dashboard/**").permitAll()
+                .requestMatchers("/api/projects/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/tasks/**").permitAll()
                 .requestMatchers("/dashboard/**").permitAll()
                 .requestMatchers("/projects/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/health").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers
@@ -50,8 +55,10 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:3000",
             "http://localhost:5173", 
+            "http://localhost:5174",
             "http://127.0.0.1:3000",
-            "http://127.0.0.1:5173"
+            "http://127.0.0.1:5173",
+            "http://127.0.0.1:5174"
         ));
         
         configuration.setAllowedMethods(Arrays.asList(

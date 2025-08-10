@@ -2,9 +2,9 @@
 -- SIMPLE DATABASE SCHEMA
 -- ====================================
 
--- Set timezone and encoding
+-- Set timezone and encoding (PostgreSQL specific - disabled for H2)
 -- SET timezone = 'Asia/Ho_Chi_Minh';
-SET client_encoding = 'UTF8';
+-- SET client_encoding = 'UTF8';
 
 -- ====================================
 -- DROP TABLES IF EXIST
