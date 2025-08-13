@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Create projects table
 CREATE TABLE IF NOT EXISTS projects (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+        name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
     start_date DATE,
     end_date DATE,

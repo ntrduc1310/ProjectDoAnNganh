@@ -64,9 +64,9 @@ logging:
         backend: INFO
 
 # JWT Configuration
-# jwt:
-#   secret: "mySecretKey123456789012345678901234567890"
-#   expiration: 86400000 # 24 hours in milliseconds
+jwt:
+  secret: "mySecretKey123456789012345678901234567890"
+  expiration: 86400000 # 24 hours in milliseconds
 
 # Swagger/OpenAPI Configuration  
 springdoc:
@@ -108,9 +108,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-      format_sql: true
-      jdbc:
-        time_zone: UTC
+        format_sql: true
+        jdbc:
+          time_zone: UTC
 
 logging:
   level:
