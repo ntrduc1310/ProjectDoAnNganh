@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 // ❌ COMMENT OUT @RestController TO DISABLE
 // @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:5175", "http://localhost:5176"})
 public class SimpleApiController {
 
     // Keep methods for reference but not active as REST endpoints

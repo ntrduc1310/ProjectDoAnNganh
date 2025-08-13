@@ -20,7 +20,7 @@ import com.doananganh.backend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/analytics")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080", "http://localhost:5175", "http://localhost:5176"})
 public class AnalyticsController {
     
     @Autowired
@@ -113,13 +113,13 @@ public class AnalyticsController {
             // User task counts by status
             Map<String, Long> taskStatusCount = new HashMap<>();
             for (TaskStatus status : TaskStatus.values()) {
-                Long count = taskRepository.countByAssigneeIdAndStatus(userId, status);
+                Long count = taskRepository.countByAssignee_IdAndStatus(userId, status);
                 taskStatusCount.put(status.name(), count != null ? count : 0L);
             }
             analytics.put("tasksByStatus", taskStatusCount);
             
             // Total tasks assigned to user
-            Long totalTasks = taskRepository.countByAssigneeId(userId);
+            Long totalTasks = taskRepository.countByAssignee_Id(userId);
             analytics.put("totalTasks", totalTasks);
             
             // User completion rate

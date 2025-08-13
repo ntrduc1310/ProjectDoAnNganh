@@ -19,6 +19,8 @@ import {
   Plus,
   Bot
 } from 'lucide-react';
+import { NotificationDropdown } from '../components/NotificationDropdown';
+import { QuickActions } from '../components/QuickActions';
 
 export const MainLayout: React.FC = () => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -34,9 +36,9 @@ export const MainLayout: React.FC = () => {
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
-    { id: 'projects', label: 'Dự án', icon: FolderOpen, path: '/projects' },
-    { id: 'reports', label: 'Báo cáo', icon: BarChart3, path: '/reports' },
-    { id: 'settings', label: 'Cài đặt', icon: Cog, path: '/settings' },
+    { id: 'tasks', label: 'Quản lý Task', icon: FolderOpen, path: '/tasks' },
+    { id: 'analytics', label: 'Phân tích', icon: BarChart3, path: '/analytics' },
+    { id: 'settings', label: 'Cài đặt', icon: Settings, path: '/settings' },
   ];
 
   const managementItems = [
@@ -244,29 +246,7 @@ export const MainLayout: React.FC = () => {
                   </div>
                   
                   {/* Quick Actions */}
-                  <div className="flex items-center space-x-2">
-                    <button
-                      className={`p-2 rounded-lg transition-colors ${
-                        isDarkMode
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                          : 'bg-blue-500 hover:bg-blue-600 text-white'
-                      }`}
-                      title="Tạo Task Mới"
-                    >
-                      <Plus size={18} />
-                    </button>
-                    
-                    <button
-                      className={`p-2 rounded-lg transition-colors ${
-                        isDarkMode
-                          ? 'bg-green-600 hover:bg-green-700 text-white'
-                          : 'bg-green-500 hover:bg-green-600 text-white'
-                      }`}
-                      title="AI Assistant"
-                    >
-                      <Bot size={18} />
-                    </button>
-                  </div>
+                  <QuickActions />
                 </div>
               </div>
 
@@ -291,23 +271,7 @@ export const MainLayout: React.FC = () => {
                 </button>
 
                 {/* Notifications */}
-                <button 
-                  className={`p-2 rounded-lg transition-colors relative ${
-                    isDarkMode 
-                      ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' 
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-                  }`}
-                  aria-label="Xem thông báo (3 thông báo mới)"
-                  title="Thông báo"
-                >
-                  <Bell size={20} aria-hidden="true" />
-                  <span 
-                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    3
-                  </span>
-                </button>
+                <NotificationDropdown />
 
                 {/* User Menu */}
                 <div className="relative group">

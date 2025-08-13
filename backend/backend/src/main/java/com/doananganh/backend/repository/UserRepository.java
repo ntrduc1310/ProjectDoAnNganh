@@ -15,15 +15,30 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     Optional<User> findByEmail(String email);
     
+    Optional<User> findByUsername(String username);
+    
     boolean existsByEmail(String email);
     
-    List<User> findByRole(String role);
+    boolean existsByUsername(String username);
+    
+    List<User> findByRole(User.Role role);
     
     List<User> findByDepartment(String department);
     
     @Query("SELECT u FROM User u WHERE u.role IN :roles")
-    List<User> findByRoles(@Param("roles") List<String> roles);
+    List<User> findByRoles(@Param("roles") List<User.Role> roles);
     
     @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role")
-    long countByRole(@Param("role") String role);
+    long countByRole(@Param("role") User.Role role);
+    
+    @Query("SELECT u FROM User u WHERE u.enabled = true")
+    List<User> findActiveUsers();
+    
+    // Enhanced methods for Load Balancing
+    List<User> findByStatus(String status);
+    
+    List<User> findByStatusAndRole(String status, User.Role role);
+    
+    @Query("SELECT u FROM User u WHERE u.status = :status AND u.role = 'USER'")
+    List<User> findAvailableUsers(@Param("status") String status);
 }

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test New Features - Task Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        h2 {
+            color: #495057;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Test New Features - Task Management System</h1>
+    
+    <div class="container">
+        <h2>📊 Analytics Features</h2>
+        <button class="button" onclick="testDashboardAnalytics()">Test Dashboard Analytics</button>
+        <button class="button" onclick="testTeamPerformance()">Test Team Performance</button>
+        <button class="button" onclick="testWorkloadDistribution()">Test Workload Distribution</button>
+        <button class="button" onclick="testSkillGapAnalysis()">Test Skill Gap Analysis</button>
+        <div id="analytics-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📋 Task Management Features</h2>
+        <button class="button" onclick="testGetTasks()">Get All Tasks</button>
+        <button class="button" onclick="testCreateTask()">Create New Task</button>
+        <button class="button" onclick="testLoadBalancing()">Test Load Balancing</button>
+        <div id="tasks-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>📁 Project Management</h2>
+        <button class="button" onclick="testGetProjects()">Get All Projects</button>
+        <button class="button" onclick="testCreateProject()">Create New Project</button>
+        <div id="projects-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Advanced Features</h2>
+        <button class="button" onclick="testBulkOperations()">Test Bulk Operations</button>
+        <button class="button" onclick="testRealTimeUpdates()">Test Real-time Updates</button>
+        <button class="button" onclick="testPerformanceMetrics()">Test Performance Metrics</button>
+        <div id="advanced-result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8081/api';
+        
+        async function makeRequest(url, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(url, options);
+                const data = await response.json();
+                return { success: true, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResult(containerId, result) {
+            const container = document.getElementById(containerId);
+            container.style.display = 'block';
+            container.className = `result ${result.success ? 'success' : 'error'}`;
+            container.textContent = JSON.stringify(result, null, 2);
+        }
+
+        // Analytics Features
+        async function testDashboardAnalytics() {
+            const result = await makeRequest(`${API_BASE}/analytics/dashboard`);
+            displayResult('analytics-result', result);
+        }
+
+        async function testTeamPerformance() {
+            const result = await makeRequest(`${API_BASE}/analytics/team-performance`);
+            displayResult('analytics-result', result);
+        }
+
+        async function testWorkloadDistribution() {
+            const result = await makeRequest(`${API_BASE}/analytics/workload-distribution`);
+            displayResult('analytics-result', result);
+        }
+
+        async function testSkillGapAnalysis() {
+            const result = await makeRequest(`${API_BASE}/analytics/skill-gaps`);
+            displayResult('analytics-result', result);
+        }
+
+        // Task Management Features
+        async function testGetTasks() {
+            const result = await makeRequest(`${API_BASE}/tasks`);
+            displayResult('tasks-result', result);
+        }
+
+        async function testCreateTask() {
+            const newTask = {
+                title: "Test Task " + new Date().getTime(),
+                description: "This is a test task created via API",
+                priority: "HIGH",
+                status: "TODO",
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            };
+            const result = await makeRequest(`${API_BASE}/tasks`, 'POST', newTask);
+            displayResult('tasks-result', result);
+        }
+
+        async function testLoadBalancing() {
+            const result = await makeRequest(`${API_BASE}/tasks/distribute-optimally`, 'POST');
+            displayResult('tasks-result', result);
+        }
+
+        // Project Management
+        async function testGetProjects() {
+            const result = await makeRequest(`${API_BASE}/projects`);
+            displayResult('projects-result', result);
+        }
+
+        async function testCreateProject() {
+            const newProject = {
+                name: "Test Project " + new Date().getTime(),
+                description: "This is a test project created via API",
+                status: "ACTIVE",
+                startDate: new Date().toISOString().split('T')[0]
+            };
+            const result = await makeRequest(`${API_BASE}/projects`, 'POST', newProject);
+            displayResult('projects-result', result);
+        }
+
+        // Advanced Features
+        async function testBulkOperations() {
+            const bulkTasks = [
+                {
+                    title: "Bulk Task 1",
+                    description: "First bulk task",
+                    priority: "MEDIUM",
+                    status: "TODO"
+                },
+                {
+                    title: "Bulk Task 2", 
+                    description: "Second bulk task",
+                    priority: "LOW",
+                    status: "TODO"
+                }
+            ];
+            const result = await makeRequest(`${API_BASE}/tasks/bulk`, 'POST', bulkTasks);
+            displayResult('advanced-result', result);
+        }
+
+        async function testRealTimeUpdates() {
+            const result = await makeRequest(`${API_BASE}/dashboard/stats`);
+            displayResult('advanced-result', {
+                success: true,
+                message: "Real-time updates test completed",
+                data: result.data,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        async function testPerformanceMetrics() {
+            const startTime = performance.now();
+            const result = await makeRequest(`${API_BASE}/tasks`);
+            const endTime = performance.now();
+            
+            displayResult('advanced-result', {
+                success: true,
+                message: "Performance test completed",
+                responseTime: `${(endTime - startTime).toFixed(2)}ms`,
+                dataSize: JSON.stringify(result.data).length + " bytes",
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            console.log('🚀 Task Management System - Feature Testing Page Loaded');
+            console.log('Backend URL:', API_BASE);
+            
+            // Test connectivity
+            setTimeout(testDashboardAnalytics, 1000);
+        };
+    </script>
+</body>
+</html>

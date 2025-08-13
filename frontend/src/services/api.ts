@@ -127,23 +127,16 @@ export const tasksApi = {
 
 export const dashboardApi = {
   getStats: (): Promise<DashboardStats> => {
-    const cacheKey = 'get:/dashboard/stats';
-    if (requestCache.has(cacheKey)) {
-      return requestCache.get(cacheKey)!;
-    }
-    
-    const promise = apiClient.get<DashboardStats>('/dashboard/stats')
-      .then(response => response.data)
-      .catch(() => ({
-        totalTasks: 0,
-        completedTasks: 0,
-        inProgressTasks: 0,
-        totalProjects: 0,
-        teamMembers: 0
-      }));
-    
-    requestCache.set(cacheKey, promise);
-    return promise;
+    console.log('🔥 Direct API call to /dashboard/stats');
+    return apiClient.get<DashboardStats>('/dashboard/stats')
+      .then(response => {
+        console.log('✅ Dashboard API success:', response.data);
+        return response.data;
+      })
+      .catch(error => {
+        console.error('❌ Dashboard API error:', error);
+        throw error;
+      });
   }
 };
 

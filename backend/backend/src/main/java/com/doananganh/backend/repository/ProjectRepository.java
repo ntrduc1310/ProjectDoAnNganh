@@ -15,7 +15,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     
     List<Project> findByStatus(String status);
     
-    List<Project> findByManagerEmail(String managerEmail);
+    @Query("SELECT p FROM Project p WHERE p.owner.email = :ownerEmail")
+    List<Project> findByManagerEmail(@Param("ownerEmail") String ownerEmail);
     
     List<Project> findByPriority(String priority);
     
@@ -24,6 +25,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("SELECT p FROM Project p WHERE p.status = :status AND p.priority = :priority")
     List<Project> findByStatusAndPriority(@Param("status") String status, @Param("priority") String priority);
     
-    @Query("SELECT p FROM Project p WHERE p.progress < :threshold")
+    @Query("SELECT p FROM Project p WHERE p.progressPercentage < :threshold")
     List<Project> findProjectsBelowProgress(@Param("threshold") Double threshold);
 }

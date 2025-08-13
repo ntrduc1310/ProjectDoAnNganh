@@ -35,6 +35,10 @@ public class UserService {
             throw new CustomException("Email đã tồn tại trong hệ thống");
         }
         
+        if (user.getUsername() != null && userRepository.existsByUsername(user.getUsername())) {
+            throw new CustomException("Username đã tồn tại trong hệ thống");
+        }
+        
         // user.setPassword(passwordEncoder.encode(user.getPassword()));  ← COMMENT
         user.setPassword(user.getPassword()); // ← TEMPORARY - NO ENCODING
         
@@ -45,16 +49,25 @@ public class UserService {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new CustomException("Không tìm thấy user với ID: " + id));
         
-        user.setFullName(userDetails.getFullName());
-        user.setRole(userDetails.getRole());
-        user.setDepartment(userDetails.getDepartment());
-        
-        // Chỉ update password nếu có giá trị mới
-        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
-            user.setPassword(userDetails.getPassword());
+        // Update user fields with new structure
+        if (userDetails.getFirstName() != null) {
+            user.setFirstName(userDetails.getFirstName());
         }
-        user.setRole(userDetails.getRole());
-        user.setDepartment(userDetails.getDepartment());
+        if (userDetails.getLastName() != null) {
+            user.setLastName(userDetails.getLastName());
+        }
+        if (userDetails.getRole() != null) {
+            user.setRole(userDetails.getRole());
+        }
+        if (userDetails.getDepartment() != null) {
+            user.setDepartment(userDetails.getDepartment());
+        }
+        if (userDetails.getPosition() != null) {
+            user.setPosition(userDetails.getPosition());
+        }
+        if (userDetails.getPhoneNumber() != null) {
+            user.setPhoneNumber(userDetails.getPhoneNumber());
+        }
         
         // Chỉ update password nếu có giá trị mới
         if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
@@ -87,17 +100,25 @@ public class UserService {
             .tokenType("Bearer")
             .id(user.getId())
             .email(user.getEmail())
-            .fullName(user.getFullName())
-            .role(user.getRole())
+            .fullName(user.getFullName()) // getFullName() method exists in User entity
+            .role(user.getRole().name()) // Convert enum to String
             .expiresIn(86400L) // 24 hours
             .build();
     }
 
-    public List<User> getUsersByRole(String role) {
+    public List<User> getUsersByRole(User.Role role) {
         return userRepository.findByRole(role);
     }
 
-    public long countUsersByRole(String role) {
+    public long countUsersByRole(User.Role role) {
         return userRepository.countByRole(role);
+    }
+    
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    
+    public List<User> getActiveUsers() {
+        return userRepository.findActiveUsers();
     }
 }

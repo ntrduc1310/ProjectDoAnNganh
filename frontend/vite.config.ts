@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
+    port: 5175,
     host: true,
     hmr: {
       overlay: false // ✅ Disable error overlay to reduce lag

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.doananganh.backend.enums.TaskPriority;
 import com.doananganh.backend.enums.TaskStatus;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,6 +55,10 @@ public class Task {
     @JoinColumn(name = "assignee_id")
     private User assignee;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
+
     @Column(name = "estimated_hours")
     private Integer estimatedHours;
 
@@ -85,6 +91,17 @@ public class Task {
     @Column(name = "assignee_email", length = 100)
     private String assigneeEmail;
 
+    // Enhanced fields for Load Balancing
+    @Column(name = "complexity_score", nullable = false)
+    private Integer complexityScore = 1;
+
+    @Type(JsonType.class)
+    @Column(name = "skill_requirements", columnDefinition = "TEXT")
+    private List<String> skillRequirements;
+
+    @Column(name = "assignment_algorithm", length = 50)
+    private String assignmentAlgorithm;
+
     // Constructors
     public Task() {}
 
@@ -109,6 +126,9 @@ public class Task {
 
     public User getAssignee() { return assignee; }
     public void setAssignee(User assignee) { this.assignee = assignee; }
+
+    public User getCreatedBy() { return createdBy; }
+    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
 
     public Integer getEstimatedHours() { return estimatedHours; }
     public void setEstimatedHours(Integer estimatedHours) { this.estimatedHours = estimatedHours; }
@@ -143,5 +163,27 @@ public class Task {
 
     public void setAssigneeEmail(String assigneeEmail) {
         this.assigneeEmail = assigneeEmail;
+    }
+
+    // Enhanced Getters and Setters for Load Balancing
+    public Integer getComplexityScore() { return complexityScore; }
+    public void setComplexityScore(Integer complexityScore) { this.complexityScore = complexityScore; }
+
+    public List<String> getSkillRequirements() { return skillRequirements; }
+    public void setSkillRequirements(List<String> skillRequirements) { this.skillRequirements = skillRequirements; }
+
+    public String getAssignmentAlgorithm() { return assignmentAlgorithm; }
+    public void setAssignmentAlgorithm(String assignmentAlgorithm) { this.assignmentAlgorithm = assignmentAlgorithm; }
+
+    // Helper method for assignee ID
+    public Long getAssigneeId() {
+        return assignee != null ? assignee.getId() : null;
+    }
+
+    public void setAssigneeId(Long assigneeId) {
+        // This will be handled by the service layer when setting the assignee
+        if (assigneeId == null) {
+            this.assignee = null;
+        }
     }
 }

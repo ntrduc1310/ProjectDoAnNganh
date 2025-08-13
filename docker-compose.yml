@@ -3,26 +3,25 @@ networks:
     driver: bridge
 
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database cho Capstone Project
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: doannganh-postgres
     environment:
-      # ✅ FIX: MATCH VỚI APPLICATION-DOCKER.PROPERTIES
-      POSTGRES_DB: doannganh
+      # ✅ Cấu hình cho capstone project
+      POSTGRES_DB: doannganh_db
       POSTGRES_USER: postgres  
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     volumes:
       # Mount data directory for persistence
       - postgres_data:/var/lib/postgresql/data
-      # ✅ FIX: ĐƯỜNG DẪN ĐÚNG (backend/backend thay vì backend)
-      - ./backend/backend/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-      - ./backend/backend/src/main/resources/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+      # ✅ Flyway migrations sẽ tự động tạo schema
+      - ./backend/backend/src/main/resources/db/migration:/docker-entrypoint-initdb.d
     healthcheck:
-      # ✅ FIX: DATABASE NAME
-      test: ["CMD-SHELL", "pg_isready -U postgres -d doannganh"]
+      # ✅ Kiểm tra health với database mới
+      test: ["CMD-SHELL", "pg_isready -U postgres -d doannganh_db"]
       interval: 10s
       timeout: 5s
       retries: 5

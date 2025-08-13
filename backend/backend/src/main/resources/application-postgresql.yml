@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: task-management-backend
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskmanagement_db
+    username: taskmanager
+    password: taskmanager123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+      pool-name: TaskManagementHikariPool
+
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        '[format_sql]': true
+        jdbc:
+          '[time_zone]': UTC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          '[use_jdbc_metadata_defaults]': false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: public
+    baseline-version: 0
+    baseline-description: "Initial baseline"
+
+logging:
+  level:
+    '[org.hibernate.SQL]': DEBUG
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
+    '[org.springframework.security]': DEBUG
+    '[com.doananganh.backend]': DEBUG
+    '[org.flywaydb]': INFO
+
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,flyway
+  endpoint:
+    health:
+      show-details: always
+    flyway:
+      enabled: true

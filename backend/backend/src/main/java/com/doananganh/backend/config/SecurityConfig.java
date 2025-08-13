@@ -1,5 +1,8 @@
 package com.doananganh.backend.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,9 +14,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers
-                .frameOptions().sameOrigin() // For H2 Console
+                .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Updated for Spring Security 6.1+
                 .httpStrictTransportSecurity(hstsConfig -> hstsConfig.disable())
             );
 
@@ -56,9 +56,13 @@ public class SecurityConfig {
             "http://localhost:3000",
             "http://localhost:5173", 
             "http://localhost:5174",
+            "http://localhost:5175",
+            "http://localhost:5176",
             "http://127.0.0.1:3000",
             "http://127.0.0.1:5173",
-            "http://127.0.0.1:5174"
+            "http://127.0.0.1:5174",
+            "http://127.0.0.1:5175",
+            "http://127.0.0.1:5176"
         ));
         
         configuration.setAllowedMethods(Arrays.asList(

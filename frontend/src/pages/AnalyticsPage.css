@@ -1,0 +1,129 @@
+/* Analytics Page Styles */
+
+.efficiency-bar-high {
+  background-color: #10b981;
+}
+
+.efficiency-bar-medium {
+  background-color: #f59e0b;
+}
+
+.efficiency-bar-low {
+  background-color: #ef4444;
+}
+
+.progress-current {
+  background-color: #3b82f6;
+}
+
+.progress-required {
+  border-color: #ef4444;
+  background-color: transparent;
+}
+
+/* Animation for progress bars */
+.efficiency-bar-high,
+.efficiency-bar-medium,
+.efficiency-bar-low,
+.progress-current {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Hover effects for analytics cards */
+.analytics-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.analytics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab animation */
+.tab-indicator {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Chart-like visual for task distribution */
+.task-distribution-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.task-distribution-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  padding: 8px;
+  margin: -8px;
+}
+
+/* Progress bar animations */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--progress-width);
+  }
+}
+
+.animated-progress {
+  animation: progressFill 1s ease-out;
+}
+
+/* Trend indicators */
+.trend-up {
+  color: #10b981;
+}
+
+.trend-down {
+  color: #ef4444;
+}
+
+.trend-neutral {
+  color: #6b7280;
+}
+
+/* Skill gap visualization */
+.skill-gap-positive {
+  color: #ef4444;
+}
+
+.skill-gap-negative {
+  color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .analytics-card {
+    padding: 1rem;
+  }
+  
+  .analytics-card:hover {
+    transform: none;
+  }
+}
+
+/* Performance metric cards */
+.metric-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.metric-card:hover {
+  transform: scale(1.02);
+}
+
+/* Loading animation */
+.analytics-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

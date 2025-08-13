@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/task-comments")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "http://localhost:8080", "http://localhost:5175", "http://localhost:5176"})
 public class TaskCommentController {
     
     @Autowired

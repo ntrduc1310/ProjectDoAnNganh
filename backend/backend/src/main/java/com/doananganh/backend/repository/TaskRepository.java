@@ -21,8 +21,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByProjectId(Long projectId);
     
     // Find by assignee
-    Page<Task> findByAssigneeId(Long assigneeId, Pageable pageable);
-    List<Task> findByAssigneeId(Long assigneeId);
+    Page<Task> findByAssignee_Id(Long assigneeId, Pageable pageable);
+    List<Task> findByAssignee_Id(Long assigneeId);
     
     // Find by status
     Page<Task> findByStatus(TaskStatus status, Pageable pageable);
@@ -32,7 +32,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> findByProjectIdAndStatus(Long projectId, TaskStatus status, Pageable pageable);
     
     // Find by assignee and status
-    Page<Task> findByAssigneeIdAndStatus(Long assigneeId, TaskStatus status, Pageable pageable);
+    Page<Task> findByAssignee_IdAndStatus(Long assigneeId, TaskStatus status, Pageable pageable);
     
     // Custom queries
     @Query("SELECT t FROM Task t WHERE t.dueDate < :currentTime AND t.status != 'COMPLETED'")
@@ -50,10 +50,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Long countByProjectIdAndStatus(@Param("projectId") Long projectId, @Param("status") TaskStatus status);
     
     @Query("SELECT COUNT(t) FROM Task t WHERE t.assignee.id = :assigneeId")
-    Long countByAssigneeId(@Param("assigneeId") Long assigneeId);
+    Long countByAssignee_Id(@Param("assigneeId") Long assigneeId);
     
     @Query("SELECT COUNT(t) FROM Task t WHERE t.assignee.id = :assigneeId AND t.status = :status")
-    Long countByAssigneeIdAndStatus(@Param("assigneeId") Long assigneeId, @Param("status") TaskStatus status);
+    Long countByAssignee_IdAndStatus(@Param("assigneeId") Long assigneeId, @Param("status") TaskStatus status);
     
     // Analytics methods
     Long countByStatus(TaskStatus status);
@@ -72,4 +72,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     // Tasks by priority
     @Query("SELECT COUNT(t) FROM Task t WHERE t.priority = :priority")
     Long countByPriority(@Param("priority") String priority);
+    
+    // Enhanced methods for Load Balancing
+    @Query("SELECT t FROM Task t WHERE t.assignee.id = :assigneeId ORDER BY t.createdAt DESC")
+    java.util.Optional<Task> findTopByAssignee_IdOrderByCreatedAtDesc(@Param("assigneeId") Long assigneeId);
+    
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.assignee.id = :assigneeId AND t.dueDate BETWEEN :startDate AND :endDate")
+    Long countByAssignee_IdAndDueDateBetween(@Param("assigneeId") Long assigneeId, 
+                                           @Param("startDate") LocalDateTime startDate, 
+                                           @Param("endDate") LocalDateTime endDate);
 }

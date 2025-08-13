@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final CORS Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test-button { background: #007bff; color: white; padding: 10px 20px; margin: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+        #results { margin-top: 20px; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Final CORS Test - Port 5176 to 8081</h1>
+    
+    <button class="test-button" onclick="testDashboardStats()">📊 Test Dashboard Stats</button>
+    <button class="test-button" onclick="testTasksAPI()">📋 Test Tasks API</button>
+    <button class="test-button" onclick="testAuthAPI()">🔐 Test Auth API</button>
+    <button class="test-button" onclick="clearResults()">🗑️ Clear Results</button>
+    
+    <div id="results">
+        <p class="info">Click buttons above to test CORS functionality.</p>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:8081/api';
+        
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            results.innerHTML += `<p class="${className}">[${timestamp}] ${message}</p>`;
+            console.log(message);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '<p class="info">Results cleared.</p>';
+        }
+        
+        async function testDashboardStats() {
+            log('🔄 Testing Dashboard Stats API...');
+            try {
+                const response = await fetch(`${baseURL}/dashboard/stats`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Dashboard Stats SUCCESS: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    log(`❌ Dashboard Stats FAILED: ${response.status} - ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Dashboard Stats ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testTasksAPI() {
+            log('🔄 Testing Tasks API...');
+            try {
+                const response = await fetch(`${baseURL}/tasks`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`✅ Tasks API SUCCESS: Found ${data.length} tasks`, 'success');
+                } else {
+                    log(`❌ Tasks API FAILED: ${response.status} - ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Tasks API ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAuthAPI() {
+            log('🔄 Testing Auth API (OPTIONS preflight)...');
+            try {
+                const response = await fetch(`${baseURL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        username: 'test',
+                        password: 'test123'
+                    })
+                });
+                
+                log(`✅ Auth API RESPONSE: ${response.status} - ${response.statusText}`, response.ok ? 'success' : 'info');
+            } catch (error) {
+                log(`❌ Auth API ERROR: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            log('🚀 Page loaded, starting auto-test...');
+            setTimeout(testDashboardStats, 1000);
+        };
+    </script>
+</body>
+</html>
+
